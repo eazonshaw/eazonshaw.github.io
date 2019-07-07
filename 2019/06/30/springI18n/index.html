@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>spring | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">spring</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">June 30, 2019&nbsp;&nbsp;13:40:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <blockquote>
+<p><strong>需求</strong>:<br>在接口服务中，根据不同的语言标识传参，返回不同的语言提示语。</p>
+</blockquote>
+<p>####设计前提<br>由于这项工作是在接口设计完之后展开的，所以只能在现有的接口开发上进行完善。<br>接口调用的主要形式有GET以及POST下不同形式的传参，如Content-Type为application/json或application/x-www-form-urlencoded。返回参数为固定设计好的构造类。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JsonResult</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String flag;</span><br><span class="line">    <span class="keyword">private</span> EErrorCode errorCode;</span><br><span class="line">    <span class="keyword">private</span> String message;</span><br><span class="line">    <span class="keyword">private</span> T data;</span><br><span class="line">    <span class="comment">//此处省略多种参数构造函数及封装方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>####设计思路<br>利用jdk本身的工具类Locale，以及spring对语言配置的初始化，构建国际化读取信息的工具类。</p>
+<ul>
+<li><p>在resources底下创建多语言配置文件，如messages.properties，本项目中默认的配置文件为中文，只需要创建英文的配置文件来做切换。<br><img src="https://upload-images.jianshu.io/upload_images/6984153-036775f3db9b9cc0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
+</li>
+<li><p>在spring的配置文件中指定路径</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">spring</span></span><br><span class="line">  <span class="string">messages</span></span><br><span class="line"><span class="attr">    basename:</span> <span class="string">i18n/messages</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>构建国际化工具类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.MessageSource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"><span class="keyword">import</span> java.util.Locale;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 国际化工具类</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> eazonshaw</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BusLocaleUtil</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> MessageSource messageSource;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(MessageSource messageSource)</span></span>&#123;</span><br><span class="line">        BusLocaleUtil.messageSource = messageSource;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取国际化字符串</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> key 对应配置文件的key</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> lang 语言标识，默认为中文（CH），可选英文（EN）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> params 占位符参数，其中日期为Java.Util.Date类型</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 国际化字符串</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getMessage</span><span class="params">(String key, String lang, Object[] params)</span> </span>&#123;</span><br><span class="line">        Locale locale;</span><br><span class="line">        <span class="keyword">if</span>(lang!=<span class="keyword">null</span> &amp;&amp; lang.equals(<span class="string">"EN"</span>)) locale = Locale.US;</span><br><span class="line">        <span class="keyword">else</span> locale = Locale.CHINA;</span><br><span class="line">        <span class="keyword">return</span> messageSource.getMessage(key, params, <span class="string">""</span>, locale);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在配置文件中定义kv值<br>messages.properties</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ADDORDER.STORE.NOENOUGH = 您所选的&#123;0, date, long&#125;的&#123;1, choice, 0#房间|1#车辆|2#翻译|3#礼仪|4#景点&#125;门票库存不足，请重新选择！</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>messages_en_US.properties</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ADDORDER.STORE.NOENOUGH = Your &#123;1, choice, 0#hotel|1#limousine|2#translator|3#etiquette|4#tour&#125; reservation for &#123;0, date, long&#125; is not available.Please reserve another time!</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>接口调用时使用<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Object[] params = &#123;<span class="keyword">new</span> Date(),<span class="number">1</span>&#125;;</span><br><span class="line"><span class="keyword">return</span> BusLocaleUtil.getMessage(<span class="string">"ADDORDER.STORE.NOENOUGH"</span>,lang,params);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>接口返回结果<br>lang=”CH”：您所选的2019年5月21日的车辆门票库存不足，请重新选择！<br>lang=”EN”：Your limousine reservation for May 21, 2019 is not available.Please reserve another time!</p>
+<p>####后续完善<br>网上提供的方法大多是在spring中配置bean，重新定义Locale的加载类，但是大多数切换都只适用于GET请求。<br>在设计时有想过在国际化调用时，根据request里的参数，自动切换语言环境。但由于spring中，在controller里用@RequestBody里接收的参数只能接收一次，再次接收只能接收到空值。如果需要实现再次获取request里的值，需要添加接收前的拦截处理。</p>
+<p>####重点难点<br>国际化配置文件的value值的占位符的灵活运用。<br>//TODO 待补充</p>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://eazonshaw.github.io/2019/06/30/springI18n/">https://eazonshaw.github.io/2019/06/30/springI18n/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/06/30/hello-world/">Hello World</a>
+            
+            
+            <a class="next" rel="next" href="/2019/06/28/helloworld/">helloworld</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
