@@ -9,7 +9,7 @@
 
 
 
-<title>&#39;小白很闲系列--由Arthas了解下JVM&#39; | Mr E</title>
+<title>小白很闲系列--由Arthas了解下JVM | Mr E</title>
 
 
 
@@ -106,7 +106,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">&#39;小白很闲系列--由Arthas了解下JVM&#39;</h1>
+            <h1 class="post-title">小白很闲系列--由Arthas了解下JVM</h1>
             
                 <div class="post-meta">
                     
@@ -138,17 +138,16 @@
 <li>遇到问题无法在线上 debug，难道只能通过加日志再重新发布吗？</li>
 <li>线上遇到某个用户的数据处理有问题，但线上同样无法 debug，线下无法重现！</li>
 <li>是否有一个全局视角来查看系统的运行状况？</li>
-<li>有什么办法可以监控到JVM的实时运行状态？</li>
-</ol>
-<p>一看这些现象，“上生产之后突然报错”、“打完包后代码没有执行”（是不是编译出错）、“调试只能通过添加日志重新发布”、“开发环境无法重现”，哇一个个都是平时很经常遇到的问题。然后这个打着<strong>Alibaba开源的Java诊断工具，深受开发者喜爱</strong>旗号的开源项目–<strong>Arthas</strong>就开始引起了我研究的兴趣了。</p>
-<blockquote>
+<li>有什么办法可以监控到JVM的实时运行状态？<br>一看这些现象，“上生产之后突然报错”、“打完包后代码没有执行”（是不是编译出错）、“调试只能通过添加日志重新发布”、“开发环境无法重现”，哇一个个都是平时很经常遇到的问题。然后这个打着<strong>Alibaba开源的Java诊断工具，深受开发者喜爱</strong>旗号的开源项目–<strong>Arthas</strong>就开始引起了我研究的兴趣了。<blockquote>
 <p>项目地址：<a href="https://github.com/alibaba/arthas" target="_blank" rel="noopener">https://github.com/alibaba/arthas</a></p>
 </blockquote>
+</li>
+</ol>
 <hr>
 <h1 id="Arhas初体验"><a href="#Arhas初体验" class="headerlink" title="Arhas初体验"></a>Arhas初体验</h1><p>软件的安装和常用命令可以看项目里面的手册，在docker镜像里试用了一下，情况是能够正常启动成功。<br>启动命令：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it &#123;containerId&#125; /bin/bash -c  &apos;java -jar arthas-boot.jar&apos;</span><br></pre></td></tr></table></figure>
 
-<p>进入容器并成功启动后，可以选择所要监控的java进程（当没有java进行时会启动失败）。<br><img src="https://upload-images.jianshu.io/upload_images/6984153-9dcc160f2c7409f7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="初始界面"><br>如图所示，可以看到arthas先自动从阿里的maven库里下载了所需要的启动文件，在外网的环境下可以正常下载。在目前的生产环境离线的条件下，需要将maven库底下的包下载后，打镜像时添加到<code>/root/.arthas/lib/3.0.5/arthas</code>下。<br><img src="https://upload-images.jianshu.io/upload_images/6984153-89a3c17f770ad722.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Dockerfile"></p>
+<p>进入容器并成功启动后，可以选择所要监控的java进程（当没有java进行时会启动失败）。<br><img src="http://pucvpw0t5.bkt.clouddn.com/markdown-img-paste-20190710184221835.png" alt="初始界面"><br>如图所示，可以看到arthas先自动从阿里的maven库里下载了所需要的启动文件，在外网的环境下可以正常下载。在目前的生产环境离线的条件下，需要将maven库底下的包下载后，打镜像时添加到<code>/root/.arthas/lib/3.0.5/arthas</code>下。<br><img src="http://pucvpw0t5.bkt.clouddn.com/markdown-img-paste-2019071018430075.png" alt="Dockerfile"></p>
 <blockquote>
 <p>maven地址：<a href="https://repo1.maven.org/maven2/com/taobao/arthas/arthas-packaging" target="_blank" rel="noopener">https://repo1.maven.org/maven2/com/taobao/arthas/arthas-packaging</a></p>
 </blockquote>
@@ -162,12 +161,11 @@
 
 </li>
 </ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/6984153-53cb5ba7642b64c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="watch结果"><br>当然，在调试过程中发现，入参的函数也是可以调用的，如<code>{params[0].getRemoteHost()}</code>。<br>arthas实现的“代码植入”，“代码实时反编译”，还有所谓跟JVM有关的信息，到底怎么做到的，JVM能够提供给我们什么信息，对于我们开发人员能带来什么样的提示。这些所有的所有，都要从好好了解JVM开始。</p>
+<p><img src="http://pucvpw0t5.bkt.clouddn.com/markdown-img-paste-20190710184328902.png" alt="watch结果"><br>当然，在调试过程中发现，入参的函数也是可以调用的，如<code>{params[0].getRemoteHost()}</code>。<br>arthas实现的“代码植入”，“代码实时反编译”，还有所谓跟JVM有关的信息，到底怎么做到的，JVM能够提供给我们什么信息，对于我们开发人员能带来什么样的提示。这些所有的所有，都要从好好了解JVM开始。</p>
 <hr>
 <h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><blockquote>
-<p>JVM，全称Java Virtual Machine，即Java虚拟机，它的作用就是让Java源代码被机器识别然后执行。</p>
+<p>JVM，全称Java Virtual Machine，即Java虚拟机，它的作用就是让Java源代码被机器识别然后执行。<br>JVM的内存布局规定了Java在运行过程中内存申请、分配、管理的策略，保证了JVM的高效稳定运行。<br><img src="http://pucvpw0t5.bkt.clouddn.com/markdown-img-paste-2019071018445488.png" alt="JVM内存布局"><br>由此可见，方法区（元空间）和堆是线程共享的，而虚拟机栈，本地方法栈和程序计数器是线程隔离的。</p>
 </blockquote>
-<p>JVM的内存布局规定了Java在运行过程中内存申请、分配、管理的策略，保证了JVM的高效稳定运行。<br><img src="https://upload-images.jianshu.io/upload_images/6984153-da4875f9230bf1eb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="JVM内存布局"><br>由此可见，方法区（元空间）和堆是线程共享的，而虚拟机栈，本地方法栈和程序计数器是线程隔离的。</p>
 <h4 id="堆（Heap）"><a href="#堆（Heap）" class="headerlink" title="堆（Heap）"></a>堆（Heap）</h4><p>Heap是<strong>OOM故障主要发源地</strong>，存储着几乎<strong>所有的实例对象</strong>，堆由垃圾收集器自动回收，占用的空间是所有内存区域中<strong>最大</strong>的。<br>可利用参数 <code>-Xms -Xmx</code> 进行堆内存控制。其中，<code>-X</code>表示它是JVM运行参数，<code>ms</code>指memory start，表示最小堆容量，<code>mx</code>指memory max，表示最大堆容量。<br>堆分为两大块，新生代和老年代，新生代又分为Eden区和两个Survivor区(from Survivor/to Survivor)，三者的比例是8:1:1。</p>
 <blockquote>
 <p>通常情况下，在生产环境中，JVM的Xms和Xmx设置成一样的大小，避免在GC（垃圾回收）后调整堆大小时带来额外的压力。</p>
@@ -234,7 +232,7 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2019/07/09/hello-world/">hexo init</a>
+                <a class="prev" rel="prev" href="/2019/07/10/hello-world/">Hello, My Blog！</a>
             
             
             <a class="next" rel="next" href="/2019/06/30/springI18n/">Spring接口国际化配置</a>
