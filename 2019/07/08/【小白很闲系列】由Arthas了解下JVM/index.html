@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>【小白很闲系列】由Arthas了解下JVM | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Arhas初体验"><span class="toc-text">Arhas初体验</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#JVM"><span class="toc-text">JVM</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#堆（Heap）"><span class="toc-text">堆（Heap）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#方法区（Method-Area）-元空间（Metaspace）"><span class="toc-text">方法区（Method Area）/元空间（Metaspace）</span></a></li></ol></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【小白很闲系列】由Arthas了解下JVM</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">July 8, 2019&nbsp;&nbsp;18:33:44</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/小白很闲系列/">小白很闲系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <p><code>人是利益使然的动物，任何时候，找到为什么，再去明白是什么。</code><br>偶尔在公众号看所谓的“XX月最受欢迎的java开源项目”，有一个项目好像一直榜上有名，最近有时间才好好去看下这个项目到底是干嘛的。先来看看这个项目“宣称”要解决的问题：</p>
+<ol>
+<li>这个类从哪个 jar 包加载的？为什么会报各种类相关的 Exception？</li>
+<li>我改的代码为什么没有执行到？难道是我没 commit？分支搞错了？</li>
+<li>遇到问题无法在线上 debug，难道只能通过加日志再重新发布吗？</li>
+<li>线上遇到某个用户的数据处理有问题，但线上同样无法 debug，线下无法重现！</li>
+<li>是否有一个全局视角来查看系统的运行状况？</li>
+<li>有什么办法可以监控到JVM的实时运行状态？<br>一看这些现象，“上生产之后突然报错”、“打完包后代码没有执行”（是不是编译出错）、“调试只能通过添加日志重新发布”、“开发环境无法重现”，哇一个个都是平时很经常遇到的问题。然后这个打着<strong>Alibaba开源的Java诊断工具，深受开发者喜爱</strong>旗号的开源项目–<strong>Arthas</strong>就开始引起了我研究的兴趣了。<blockquote>
+<p>项目地址：<a href="https://github.com/alibaba/arthas" target="_blank" rel="noopener">https://github.com/alibaba/arthas</a></p>
+</blockquote>
+</li>
+</ol>
+<hr>
+<h1 id="Arhas初体验"><a href="#Arhas初体验" class="headerlink" title="Arhas初体验"></a>Arhas初体验</h1><p>软件的安装和常用命令可以看项目里面的手册，在docker镜像里试用了一下，情况是能够正常启动成功。<br>启动命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it &#123;containerId&#125; /bin/bash -c  &apos;java -jar arthas-boot.jar&apos;</span><br></pre></td></tr></table></figure>
+
+<p>进入容器并成功启动后，可以选择所要监控的java进程（当没有java进行时会启动失败）。<br><img src="http://pucvpw0t5.bkt.clouddn.com/markdown-img-paste-20190710184221835.png" alt="初始界面"><br>如图所示，可以看到arthas先自动从阿里的maven库里下载了所需要的启动文件，在外网的环境下可以正常下载。在目前的生产环境离线的条件下，需要将maven库底下的包下载后，打镜像时添加到<code>/root/.arthas/lib/3.0.5/arthas</code>下。<br><img src="http://pucvpw0t5.bkt.clouddn.com/markdown-img-paste-2019071018430075.png" alt="Dockerfile"></p>
+<blockquote>
+<p>maven地址：<a href="https://repo1.maven.org/maven2/com/taobao/arthas/arthas-packaging" target="_blank" rel="noopener">https://repo1.maven.org/maven2/com/taobao/arthas/arthas-packaging</a></p>
+</blockquote>
+<p>接着尝试了一些操作文档里的命令。以下场景均为预设。</p>
+<ul>
+<li><p>当打包完毕后，发布生产环境，逻辑没有实现。这时候可以利用反编译来查看JVM中加载的代码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ jad &#123;ClassPath.ClassName&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>调试接口时，接口传参出参异常的查看。下面指令是指查看某个类某个方法第一个深度为2的入参。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ watch &#123;ClassPath.ClassName&#125; &#123;WayName&#125; &#123;params[0]&#125; -x 2</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><img src="http://pucvpw0t5.bkt.clouddn.com/markdown-img-paste-20190710184328902.png" alt="watch结果"><br>当然，在调试过程中发现，入参的函数也是可以调用的，如<code>{params[0].getRemoteHost()}</code>。<br>arthas实现的“代码植入”，“代码实时反编译”，还有所谓跟JVM有关的信息，到底怎么做到的，JVM能够提供给我们什么信息，对于我们开发人员能带来什么样的提示。这些所有的所有，都要从好好了解JVM开始。</p>
+<hr>
+<h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><blockquote>
+<p>JVM，全称Java Virtual Machine，即Java虚拟机，它的作用就是让Java源代码被机器识别然后执行。<br>JVM的内存布局规定了Java在运行过程中内存申请、分配、管理的策略，保证了JVM的高效稳定运行。<br><img src="http://pucvpw0t5.bkt.clouddn.com/markdown-img-paste-2019071018445488.png" alt="JVM内存布局"><br>由此可见，方法区（元空间）和堆是线程共享的，而虚拟机栈，本地方法栈和程序计数器是线程隔离的。</p>
+</blockquote>
+<h4 id="堆（Heap）"><a href="#堆（Heap）" class="headerlink" title="堆（Heap）"></a>堆（Heap）</h4><p>Heap是<strong>OOM故障主要发源地</strong>，存储着几乎<strong>所有的实例对象</strong>，堆由垃圾收集器自动回收，占用的空间是所有内存区域中<strong>最大</strong>的。<br>可利用参数 <code>-Xms -Xmx</code> 进行堆内存控制。其中，<code>-X</code>表示它是JVM运行参数，<code>ms</code>指memory start，表示最小堆容量，<code>mx</code>指memory max，表示最大堆容量。<br>堆分为两大块，新生代和老年代，新生代又分为Eden区和两个Survivor区(from Survivor/to Survivor)，三者的比例是8:1:1。</p>
+<blockquote>
+<p>通常情况下，在生产环境中，JVM的Xms和Xmx设置成一样的大小，避免在GC（垃圾回收）后调整堆大小时带来额外的压力。</p>
+</blockquote>
+<h4 id="方法区（Method-Area）-元空间（Metaspace）"><a href="#方法区（Method-Area）-元空间（Metaspace）" class="headerlink" title="方法区（Method Area）/元空间（Metaspace）"></a>方法区（Method Area）/元空间（Metaspace）</h4><p>方法区（Method Area）又名永久代（Perm区），它在启动时固定大小，很难进行调优，某些场景下，若动态类加载过多，容易产生Perm区的OOM（内存溢出），而解决问题的方法就是设定运行参数。<br>而元空间（Metaspace）在JDK8开始，取代了方法区，解决了上面的问题。</p>
+<ul>
+<li><strong>方法区</strong>主要用于存放已经被虚拟机加载的类信息，如<code>常量，静态变量</code>。 这块区域也被称为<code>永久代</code>。<br>可利用参数 <code>-XX:PermSize -XX:MaxPermSize</code> 控制初始化方法区和最大方法区大小。</li>
+<li><strong>元数据区</strong>在默认情况下，会根据使用情况动态调整，避免了在 jdk7 中由于加载类过多从而出现 <code>java.lang.OutOfMemoryError: PermGen</code>。<br>但也不能无限扩展，因此可以使用 <code>-XX:MaxMetaspaceSize</code>来控制最大内存。<blockquote>
+<p>其实，移除永久代的工作从JDK1.7就开始了。JDK1.7中，存储在永久代的部分数据就已经转移到了Java Heap或者是 Native Heap。但永久代仍存在于JDK1.7中，并没完全移除，譬如符号引用(Symbols)转移到了native heap；字面量(interned strings)转移到了java heap；类的静态变量(class statics)转移到了java heap。<br>java -XX:PermSize -XX:MaxPermSize<br>JDK6：<code>java.lang.OutOfMemoryError: PermGen space</code><br>JDK7/8：<code>java.lang.OutOfMemoryError: Java heap space</code><br>java -XX:MetaspaceSize -XX:MaxMetaspaceSize<br>JDK8：<code>java.lang.OutOfMemoryError: Metaspace</code></p>
+</blockquote>
+</li>
+</ul>
+<p>元空间与永久代之间最大的区别：元空间并不在虚拟机中，而是使用本地内存。<br>//TODO</p>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2019/07/08/【小白很闲系列】由Arthas了解下JVM/">http://eazon.xyz/2019/07/08/【小白很闲系列】由Arthas了解下JVM/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/JVM/"># JVM</a>
+                    
+                        <a href="/tags/Arthas/"># Arthas</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2019/09/20/【小白很闲系列】最通俗地告诉你什么是JS闭包/">【小白很闲系列】最通俗地告诉你什么是JS闭包</a>
+            
+            
+            <a class="next" rel="next" href="/2019/06/30/springI18n/">Spring接口国际化配置</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>

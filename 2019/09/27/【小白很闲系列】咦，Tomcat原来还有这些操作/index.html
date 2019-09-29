@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>【小白很闲系列】咦，Tomcat原来还有这些操作 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#基本启动逻辑"><span class="toc-text">基本启动逻辑</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#不常用但应该知道的操作"><span class="toc-text">不常用但应该知道的操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#version"><span class="toc-text">version</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#service"><span class="toc-text">service</span></a></li></ol></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【小白很闲系列】咦，Tomcat原来还有这些操作</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">September 27, 2019&nbsp;&nbsp;17:33:50</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/小白很闲系列/">小白很闲系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>用了那么久的tomcat，今天却在war包部署tomcat，启动tomcat，访问项目这么一个常规而又傻瓜的流程中，对tomcat抛出的异常一知半解，只见异常是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">org.apache.jasper.compiler.JDTCompiler$1 findType</span><br><span class="line">严重：Compilation error</span><br><span class="line">org.eclipse.jdt.internal.compiler.classfmt.ClassFormatException</span><br></pre></td></tr></table></figure>
+
+<p>大概可以看出，jsp编译java代码的时候，编译出错啦，编译文件的格式有问题。喔~突然想到java代码一般是在打包的时候就编译成class文件，但是jsp里的java代码好像没有，那估计是jsp的java代码是在服务器运用到的时候才去进行编译的。</p>
+<p>本文结构：</p>
+<ol>
+<li>tomcat的基本启动逻辑</li>
+<li>tomcat不常用但应该知道的操作</li>
+</ol>
+<p>运行环境：</p>
+<ul>
+<li>Tomcat 6.0.26</li>
+<li>win10专业版</li>
+</ul>
+<h1 id="基本启动逻辑"><a href="#基本启动逻辑" class="headerlink" title="基本启动逻辑"></a>基本启动逻辑</h1><p>既然jsp的java代码是在服务器运用到的时候才去进行编译的，这也就意味着这时候tomcat将会应用它所指定的jdk，我们都知道，tomcat的版本和jdk的版本是有关联关系的。好的，明白了逻辑，我们来看看tomcat的启动逻辑：</p>
+<blockquote>
+<p>tomcat在不同的操作系统的启动文件都是startup，进入文件后我们可以看到，tomcat的路径CATALINA_HOME和jdk的路径JAVA_HOME/JRE_HOME都是在这里面寻找以及赋值的，而且startup里主要执行了两个文件，catalina和setclasspath，查看逻辑可以得知，tomcat默认查找的就是环境变量的JAVA_HOME。</p>
+</blockquote>
+<p>知道了tomcat的启动逻辑，那我们只要在启动的任何一个相关文件里指定JAVA_HOME，就可以配置指定的JDK啦。如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set JAVA_HOME=&#123;here is your own jdk path&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>这里要注意，参数名称和值，与等号之间不能有空格，否则将配置失败</strong></p>
+</blockquote>
+<p>好了，配置好指定的jdk后，还要确认一下tomcat的运行环境，可以在%CATALINA_HOME%/bin底下，执行version，看到的结果大致是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">version</span><br><span class="line">Using CATALINA_BASE:   &quot;&#123;here is your own tomcat path&#125;&quot;</span><br><span class="line">Using CATALINA_HOME:   &quot;&#123;here is your own tomcat path&#125;&quot;</span><br><span class="line">Using CATALINA_TMPDIR: &quot;&#123;here is your own tomcat path&#125;\temp&quot;</span><br><span class="line">Using JRE_HOME:        &quot;&#123;here is your own jdk path&#125;&quot;</span><br><span class="line">Using CLASSPATH:       &quot;&#123;here is your own tomcat path&#125;\bin\bootstrap.jar&quot;</span><br><span class="line">Server version: Apache Tomcat/6.0.26</span><br><span class="line">Server built:   March 9 2010 1805</span><br><span class="line">Server number:  6.0.26.0</span><br><span class="line">OS Name:        Windows 8</span><br><span class="line">OS Version:     6.2</span><br><span class="line">Architecture:   amd64</span><br><span class="line">JVM Version:    1.6.0_45-b06</span><br><span class="line">JVM Vendor:     Sun Microsystems Inc.</span><br></pre></td></tr></table></figure>
+
+<p>查看到JDK的版本和路径都正确了，就大功告成了~</p>
+<h1 id="不常用但应该知道的操作"><a href="#不常用但应该知道的操作" class="headerlink" title="不常用但应该知道的操作"></a>不常用但应该知道的操作</h1><h2 id="version"><a href="#version" class="headerlink" title="version"></a>version</h2><p>在配置完jdk等等运行环境之后，可以通过该命令查看整个运行环境，避免配置失败。</p>
+<h2 id="service"><a href="#service" class="headerlink" title="service"></a>service</h2><p>如果直接执行tomcat的安装版，我们往往可以看到tomcat在windows系统里会直接创建一个apache tomcat的服务，而我们也可以直接在服务里进行启动，以及设置自动启动，避免了运行程序在前台容易被其他用户误关闭。<br>而如果是使用tomcat的解压版的话，其实tomcat也提供了快捷的创建windows服务的操作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service install &#123;here is your custom defined serverName&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>要注意的是：windows下，必须用“管理员身份”打开cmd命令窗口，才可以执行上述操作，否则会出现安装失败的情况。</p>
+</blockquote>
+<p>同样，在创建服务之前，若要指定JDK，也需要到service文件里进行配置。</p>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2019/09/27/【小白很闲系列】咦，Tomcat原来还有这些操作/">http://eazon.xyz/2019/09/27/【小白很闲系列】咦，Tomcat原来还有这些操作/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/tomcat/"># tomcat</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2019/09/20/【小白很闲系列】最通俗地告诉你什么是JS闭包/">【小白很闲系列】最通俗地告诉你什么是JS闭包</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
