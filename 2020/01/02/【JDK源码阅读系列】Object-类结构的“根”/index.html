@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>【JDK源码阅读系列】Object--类结构的“根” | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#核心方法"><span class="toc-text">核心方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#equals"><span class="toc-text">equals</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#功能"><span class="toc-text">功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特性"><span class="toc-text">特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例"><span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#hashCode"><span class="toc-text">hashCode</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#功能-1"><span class="toc-text">功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-1"><span class="toc-text">示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何重写hashCode方法"><span class="toc-text">如何重写hashCode方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#clone"><span class="toc-text">clone</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#功能-2"><span class="toc-text">功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特性-1"><span class="toc-text">特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-2"><span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#toString-NaN"><span class="toc-text">toString</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#功能-3"><span class="toc-text">功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特性-2"><span class="toc-text">特性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#其他方法"><span class="toc-text">其他方法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#registerNatives"><span class="toc-text">registerNatives</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#getClass"><span class="toc-text">getClass</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wait、notify、notifyAll"><span class="toc-text">wait、notify、notifyAll</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#finalize"><span class="toc-text">finalize</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【JDK源码阅读系列】Object--类结构的“根”</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 2, 2020&nbsp;&nbsp;11:14:38</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/JDK源码阅读系列/">JDK源码阅读系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><ul>
+<li>Object类是Java类结构的“根”。</li>
+<li>Java中所有类都继承于Object类，即Object是其他类的父类。</li>
+<li>所有的对象，包括泛型，都需要继承Object类中的方法。</li>
+</ul>
+<h1 id="核心方法"><a href="#核心方法" class="headerlink" title="核心方法"></a>核心方法</h1><blockquote>
+<p>native是与C++ 联合开发的时候用的。使用native关键字说明这个方法是原生函数，被编译成了DLL，由java去调用。</p>
+</blockquote>
+<h2 id="equals"><a href="#equals" class="headerlink" title="equals"></a>equals</h2><h3 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h3><p>比较是否对象是否相等</p>
+<h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ul>
+<li><strong>自反性</strong>：对于任何非null的引用值x，x.equals(x)必须返回true。</li>
+<li><strong>对称性</strong>：对于任何非null的引用值x和y，当且仅当y.equals(x)返回true时，x.equals(y)必须返回true。</li>
+<li><strong>传递性</strong>：对于任何非null的引用值x、y、z，如果x.equals(y)返回true，并且y.equals(z)返回true，那么x.equals(z)也必须返回ture。</li>
+<li><strong>一致性</strong>：对于任何非null的引用值x和y，只要equals的比较操作在对象中所用的信息没有被修改，多次调用x.equals(y)就会一致的返回ture，或者一致的返回false。</li>
+<li><strong>非空性</strong>：对于任何非null的引用值x，x.equals(null)必须返回false。<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="comment">//省略构造函数和set、get</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>重写equals方法，先判断对象是否为null，再判断对象是否指定类型，最后判断对象的属性是否相等。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(obj == <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(!(obj <span class="keyword">instanceof</span> User))&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    User user = (User)obj;</span><br><span class="line">    <span class="keyword">return</span> user.age == age &amp;&amp; user.name.equals(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong>：在应用场景中，假设变量X要与常量C进行比较，一般用<code>C.equals(X)</code>而不是<code>X.equals(C)</code>，由于<code>equals</code>的调用者是非空的，而我们已知常量C为非空，这样避免抛出异常。</p>
+</blockquote>
+<blockquote>
+<p><strong>当覆盖equals方法时，必须同时覆盖hashCode方法</strong>。这是为了维护使用hashCode来判断是否为同一对象的方法，如HashMap。</p>
+</blockquote>
+<h2 id="hashCode"><a href="#hashCode" class="headerlink" title="hashCode"></a>hashCode</h2><h3 id="功能-1"><a href="#功能-1" class="headerlink" title="功能"></a>功能</h3><p>返回对象的哈希值，主要是对哈希表提供支持，如HashMap。</p>
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a.hashCode()</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在Object中hashCode方法是native，那如果我们重写了equals方法的话，该如何重写hashCode方法呢？</p>
+</blockquote>
+<h3 id="如何重写hashCode方法"><a href="#如何重写hashCode方法" class="headerlink" title="如何重写hashCode方法"></a>如何重写hashCode方法</h3><ol>
+<li><p>定义一个整型变量result，并赋值一个非零数，如17。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> result = <span class="number">17</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>根据对象的域（类型）进行计算。</p>
+</li>
+</ol>
+<ul>
+<li><strong>boolean</strong>：计算(f?1:0)。</li>
+<li><strong>byte、char、short、int</strong>：计算(int)f。</li>
+<li><strong>long</strong>：计算(int)(f^(f&gt;&gt;&gt;32))。</li>
+<li><strong>float</strong>：计算Float.floatToIntBits(f)。</li>
+<li><strong>double</strong>：计算Double.doubleToLongBits(f)，然后再计算long。</li>
+<li>如果该域是一个<strong>对象引用</strong>，并且该类的equals方法通过递归的调用equals的方式来比较这个域，则同样为这个域递归的调用hashCode。如果这个域的值为null，则返回0。</li>
+<li>如果该域是一个<strong>数组</strong>，则要把每一个元素当作单独的域来处理，也就是说，递归地应用上述规则，对每个重要元素计算一个散列码，然后把这些散列值组合起来。也可以使用Arrays.hashCode方法。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//String name</span></span><br><span class="line">result = result * <span class="number">31</span> + name.hashCode();</span><br><span class="line"><span class="comment">//int age</span></span><br><span class="line">result = result * <span class="number">31</span> + age;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ol start="3">
+<li>返回结果。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">return result;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="clone"><a href="#clone" class="headerlink" title="clone"></a>clone</h2><h3 id="功能-2"><a href="#功能-2" class="headerlink" title="功能"></a>功能</h3><p><strong>复制对象</strong>，可以将其视为除了new以外，另一种新建对象的方式。</p>
+<h3 id="特性-1"><a href="#特性-1" class="headerlink" title="特性"></a>特性</h3><ul>
+<li><code>x.clone().getClass() == x.getClass()</code>、<code>x.clone() != x</code> 两个表达式为true</li>
+<li>如果需要复制的对象中包含引用类型，则该引用类型在复制后，仍然指向同一个地址。<h3 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">User u = <span class="keyword">new</span> User(<span class="number">15</span>,<span class="string">"test"</span>);</span><br><span class="line">u.equals(u.clone()); <span class="comment">//false</span></span><br><span class="line">u.getClass().equals(u.clone().getClass()); <span class="comment">//true</span></span><br><span class="line">u.getName().equals(u.clone().getName()); <span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<blockquote>
+<p>《Effective Java》的作者Joshua Bloch建议我们不应该实现Cloneable接口，而应该使用拷贝构造器或者拷贝工厂。</p>
+</blockquote>
+<h2 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="toString"></a>toString</h2><h3 id="功能-3"><a href="#功能-3" class="headerlink" title="功能"></a>功能</h3><p>将对象以字符串的形式表示。</p>
+<h3 id="特性-2"><a href="#特性-2" class="headerlink" title="特性"></a>特性</h3><ul>
+<li>默认表达式：<code>getClass().getName() + &#39;@&#39; + Integer.toHexString(hashCode())</code>，即类的名称的字符串+@+对象的哈希码的无符号的十六进制</li>
+</ul>
+<h1 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法</h1><h2 id="registerNatives"><a href="#registerNatives" class="headerlink" title="registerNatives"></a>registerNatives</h2><ul>
+<li>声明为public final native</li>
+<li>该方法主要是为了服务于JNI（Java Native Interface）的，它主要是提供了java类中的方法与对应C++ 代码中的方法的映射，方便jvm查找调用C++ 中的方法。<h2 id="getClass"><a href="#getClass" class="headerlink" title="getClass"></a>getClass</h2></li>
+<li>声明为public final native</li>
+<li>获取Class类<h2 id="wait、notify、notifyAll"><a href="#wait、notify、notifyAll" class="headerlink" title="wait、notify、notifyAll"></a>wait、notify、notifyAll</h2></li>
+<li>声明为public final native</li>
+<li>多线程基础</li>
+<li><a href="https://juejin.im/entry/5a2bb783f265da43163cff74" target="_blank" rel="noopener">掘金：Wait/Notify通知机制解析</a></li>
+<li><a href="https://www.jianshu.com/p/84ee31ed548f" target="_blank" rel="noopener">简书：notify()和wait()例子</a></li>
+<li>wait和notify基本原理示例<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadA</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> total;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ThreadB b = <span class="keyword">new</span> ThreadB();</span><br><span class="line">        b.start();</span><br><span class="line">        <span class="keyword">synchronized</span> (b)&#123;</span><br><span class="line">            System.out.println(<span class="string">"Waiting for b to complete..."</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                b.wait();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">"Total is:"</span>+total);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadB</span> <span class="keyword">extends</span> <span class="title">Thread</span></span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (<span class="keyword">this</span>)&#123;</span><br><span class="line">                System.out.println(<span class="string">"b is counting..."</span>);</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">100</span>;i++)&#123;</span><br><span class="line">                    total += i;</span><br><span class="line">                    <span class="keyword">if</span>(total &gt;<span class="number">100</span>)&#123;</span><br><span class="line">                        notify();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>上述执行结果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Waiting <span class="keyword">for</span> b to complete...</span><br><span class="line">b is counting...</span><br><span class="line">Total is:<span class="number">499500</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>从上述结果可以看出，线程A并不是在线程B调用notify时被立即唤醒，而是等待线程B的同步代码块执行完后，再从wait方法后继续执行。<code>synchronized同步方法（块）同一时刻只允许一个线程在里面</code>，线程B不退出，线程A就阻塞。</p>
+</blockquote>
+<p><img src="https://user-gold-cdn.xitu.io/2019/3/21/1699bd8849de15ce?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt><br><strong>原理</strong>：</p>
+<ol>
+<li>当线程A调用wait方法后，线程A让出锁，同时加入锁对象等待队列。</li>
+<li>线程B获取锁后，调用notify方法通知锁对象等待队列，使得线程A从等待队列进入阻塞队列。</li>
+<li>线程A进入阻塞队列后，直至线程B释放锁后，线程A竞争得到锁继续从wait方法后执行。</li>
+</ol>
+<h2 id="finalize"><a href="#finalize" class="headerlink" title="finalize"></a>finalize</h2><ul>
+<li>当垃圾收集确定不再有对该对象的引用时，垃圾收集器在对象上调用该方法。</li>
+<li>现已不建议使用。<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1></li>
+<li><a href="https://docs.oracle.com/javase/8/docs/api/" target="_blank" rel="noopener">Oracle Java8 api</a></li>
+<li><a href="http://www.matools.com/api/java8" target="_blank" rel="noopener">Java8 中文文档</a></li>
+<li><a href="https://www.jianshu.com/p/4791207253a0" target="_blank" rel="noopener">jdk源码分析（一）——Object类</a></li>
+<li><a href="https://blog.csdn.net/zhangjg_blog/article/details/18369201" target="_blank" rel="noopener">详解Java中的clone方法 – 原型模式</a></li>
+</ul>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2020/01/02/【JDK源码阅读系列】Object-类结构的“根”/">http://eazon.xyz/2020/01/02/【JDK源码阅读系列】Object-类结构的“根”/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/jdk/"># jdk</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2019/12/03/【数据结构与算法】堆/">【数据结构与算法】堆</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
