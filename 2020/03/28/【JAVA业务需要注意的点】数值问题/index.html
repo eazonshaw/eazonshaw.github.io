@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>【JAVA业务需要注意的点】数值问题 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#浮点数"><span class="toc-text">浮点数</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#运算"><span class="toc-text">运算</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#测试用例"><span class="toc-text">测试用例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结论"><span class="toc-text">结论</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#格式化"><span class="toc-text">格式化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#测试用例-1"><span class="toc-text">测试用例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析-1"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#结论-1"><span class="toc-text">结论</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BigDecimal"><span class="toc-text">BigDecimal</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#精确度和位数"><span class="toc-text">精确度和位数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#判等"><span class="toc-text">判等</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#大数值"><span class="toc-text">大数值</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#测试用例-2"><span class="toc-text">测试用例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#分析-2"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BigInteger"><span class="toc-text">BigInteger</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#结论-2"><span class="toc-text">结论</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【JAVA业务需要注意的点】数值问题</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 28, 2020&nbsp;&nbsp;21:23:16</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/JAVA业务需要注意的点/">JAVA业务需要注意的点</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <blockquote>
+<p>本文主要阐述Java中的浮点数计算需要注意的点。</p>
+</blockquote>
+<h1 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h1><h2 id="运算"><a href="#运算" class="headerlink" title="运算"></a>运算</h2><h3 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> a = <span class="number">0.1</span>+<span class="number">0.2</span>;<span class="comment">//0.30000000000000004</span></span><br><span class="line"><span class="keyword">double</span> b = <span class="number">1.0</span>-<span class="number">0.8</span>;<span class="comment">//0.19999999999999996</span></span><br><span class="line"><span class="keyword">double</span> c = <span class="number">4.015</span>*<span class="number">100</span>;<span class="comment">//401.49999999999994</span></span><br><span class="line"><span class="keyword">double</span> d = <span class="number">123.3</span>/<span class="number">100</span>;<span class="comment">//1.2329999999999999</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">double</span> amount1 = <span class="number">2.15</span>,amount2 = <span class="number">1.10</span>;</span><br><span class="line">amount1 - amount2 == <span class="number">1.05</span>;<span class="comment">//false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>计算机是以<strong>二进制</strong>存储数值的，浮点数也不例外。Java 采用了<a href="https://en.wikipedia.org/wiki/IEEE_754" target="_blank" rel="noopener">IEEE 754 标准</a>实现浮点数的表达和运算。如，0.1 的二进制表示为 0.0 0011 0011 0011… （0011 无限循环)，再转换为十进制就是 0.1000000000000000055511151231257827021181583404541015625。</p>
+<p><strong>对于计算机而言，0.1 无法精确表达，这是浮点数计算造成精度损失的根源。</strong></p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>虽然二进制数转换成十进制数的差值不大，但当涉及大数值时，这个数目就不小，因此不能被忽略。<strong>可以用BigDecimal 类型，用于浮点数精确表达和运算的场景</strong>。</p>
+<h2 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h2><h3 id="测试用例-1"><a href="#测试用例-1" class="headerlink" title="测试用例"></a>测试用例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> num1 = <span class="number">3.35</span>;</span><br><span class="line"><span class="keyword">float</span> num2 = <span class="number">3.35f</span>;</span><br><span class="line"><span class="comment">//四舍五入</span></span><br><span class="line">String.format(<span class="string">"%.1f"</span>, num1); <span class="comment">//3.350000000000000088817841970012523233890533447265625</span></span><br><span class="line">String.format(<span class="string">"%.1f"</span>, num2); <span class="comment">//3.349999904632568359375</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><p>String.format 采用四舍五入的方式进行舍入，取 1 位小数，double 的 3.350 四舍五入为 3.4，而 float 的 3.349 四舍五入为 3.3。</p>
+<h3 id="结论-1"><a href="#结论-1" class="headerlink" title="结论"></a>结论</h3><p><strong>浮点数的字符串格式化要通过 BigDecimal 进行</strong>。配置参数<code>ROUND_DOWN</code>表示向下舍去，<code>ROUND_HALF_UP</code>表示四舍五入。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BigDecimal num1 = new BigDecimal(&quot;3.35&quot;);</span><br><span class="line">BigDecimal num2 = num1.setScale(1, BigDecimal.ROUND_DOWN); //3.3</span><br><span class="line">BigDecimal num3 = num1.setScale(1, BigDecimal.ROUND_HALF_UP); //3.4</span><br></pre></td></tr></table></figure>
+
+<h2 id="BigDecimal"><a href="#BigDecimal" class="headerlink" title="BigDecimal"></a>BigDecimal</h2><h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><blockquote>
+<p>BigDecimal 的使用有什么注意的点？</p>
+</blockquote>
+<ol>
+<li><strong>使用 BigDecimal 表示和计算浮点数，且务必使用字符串的构造方法来初始化 BigDecimal</strong>。如，使用<code>new BigDecimal(&quot;number&quot;)</code>，而不是<code>new BigDecimal(number)</code>。</li>
+<li><strong>如果一定要用 Double 来初始化 BigDecimal 的话，可以使用 BigDecimal.valueOf 方法</strong>。如，使用<code>BigDecimal.valueOf(doublenum)</code>，而不是<code>new BigDecimal(Double.toString(doublenum))</code>。</li>
+</ol>
+<h3 id="精确度和位数"><a href="#精确度和位数" class="headerlink" title="精确度和位数"></a>精确度和位数</h3><p><strong>BigDecimal 用 <code>scale</code> 表示小数点右边的位数， <code>precision</code>表示精度，即有效位数的长度。</strong></p>
+<p>如，用 new BigDecimal(Double.toString(100)) 得到的 BigDecimal 的 scale=1、precision=4；而 new BigDecimal(“100”) 得到的 BigDecimal 的 scale=0、precision=3。</p>
+<h3 id="判等"><a href="#判等" class="headerlink" title="判等"></a>判等</h3><p>查看 BigDecimal 里的 equals 和 hashCode 源码，可以发现，它们会同时考虑 value 和 scale，就是会区分数值的精确度，即 0.1 与 0.10 是不同的。</p>
+<ul>
+<li>如果要比较值的话，可以用 compareTo 方法。</li>
+<li>由于 hashCode 的值不同，不能使用HashSet 或 HashMap。<ul>
+<li>使用 TreeSet 替换 HashSet。TreeSet 不使用 hashCode 方法，也不使用 equals 比较元素，而是使用 compareTo 方法。</li>
+<li>把 BigDecimal 存入 HashSet 或 HashMap 前，先使用 stripTrailingZeros 方法去掉尾部的零，比较的时候也去掉尾部的 0，确保 value 相同的 BigDecimal，scale 也是一致的。如，<code>new BigDecimal(&quot;1.0&quot;).stripTrailingZeros()</code>。</li>
+</ul>
+</li>
+</ul>
+<h1 id="大数值"><a href="#大数值" class="headerlink" title="大数值"></a>大数值</h1><h2 id="测试用例-2"><a href="#测试用例-2" class="headerlink" title="测试用例"></a>测试用例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">long l = Long.MAX_VALUE; </span><br><span class="line">l + 1; //-9223372036854775808</span><br><span class="line">l + 1 == Long.MIN_VALUE; //true</span><br></pre></td></tr></table></figure>
+
+<h2 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h2><p>long 的最大值加一变成了最小值。<strong>这是发生了溢出，而且没有任何异常</strong>。使用 Math 类的 addExact 方法，可以捕获到 ArithmeticException 异常，为 long overflow。</p>
+<h2 id="BigInteger"><a href="#BigInteger" class="headerlink" title="BigInteger"></a>BigInteger</h2><p>可以使用 BigInteger 对大数值进行计算。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BigInteger i = new BigInteger(String.valueOf(Long.MAX_VALUE));</span><br><span class="line">i.add(BigInteger.ONE).toString(); //不会抛出异常</span><br></pre></td></tr></table></figure>
+
+<h1 id="结论-2"><a href="#结论-2" class="headerlink" title="结论"></a>结论</h1><p>对于金融、科学计算等场景，尽可能使用 BigDecimal 和 BigInteger，避免由精度和溢出问题引发难以发现，但影响重大的 Bug。</p>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2020/03/28/【JAVA业务需要注意的点】数值问题/">http://eazon.xyz/2020/03/28/【JAVA业务需要注意的点】数值问题/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/28/【JAVA业务需要注意的点】数据库索引问题/">【JAVA业务需要注意的点】数据库索引问题</a>
+            
+            
+            <a class="next" rel="next" href="/2020/03/28/【JAVA业务需要注意的点】判等问题/">【JAVA业务需要注意的点】判等问题</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>

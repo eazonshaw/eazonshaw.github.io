@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>【JAVA业务需要注意的点】判等问题 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#equals"><span class="toc-text">equals</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#和-equals"><span class="toc-text">== 和 equals</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#整型"><span class="toc-text">整型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#测试用例"><span class="toc-text">测试用例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分析"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#结论"><span class="toc-text">结论</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符串类型"><span class="toc-text">字符串类型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#测试用例-1"><span class="toc-text">测试用例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#字符串常量池机制"><span class="toc-text">字符串常量池机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分析-1"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#equals-的实现"><span class="toc-text">equals 的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#概述-1"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#实现方式"><span class="toc-text">实现方式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#hashCode"><span class="toc-text">hashCode</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述-2"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意-1"><span class="toc-text">注意</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-text">实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#compareTo"><span class="toc-text">compareTo</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述-3"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意-2"><span class="toc-text">注意</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现-1"><span class="toc-text">实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#结论-1"><span class="toc-text">结论</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#还有点啥"><span class="toc-text">还有点啥</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【JAVA业务需要注意的点】判等问题</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">March 28, 2020&nbsp;&nbsp;16:18:53</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/JAVA业务需要注意的点/">JAVA业务需要注意的点</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <blockquote>
+<p>本文主要阐述代码中的判等问题。</p>
+</blockquote>
+<h1 id="equals"><a href="#equals" class="headerlink" title="equals"></a>equals</h1><h2 id="和-equals"><a href="#和-equals" class="headerlink" title="== 和 equals"></a>== 和 equals</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>比较值的内容，基本类型使用 <code>==</code> ，引用类型使用 <code>equals</code> 。</p>
+<h3 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h3><h4 id="测试用例"><a href="#测试用例" class="headerlink" title="测试用例"></a>测试用例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**1**/</span></span><br><span class="line">Integer a = <span class="number">127</span>; <span class="comment">//Integer.valueOf(127)</span></span><br><span class="line">Integer b = <span class="number">127</span>; <span class="comment">//Integer.valueOf(127)</span></span><br><span class="line">a == b;<span class="comment">//true</span></span><br><span class="line"><span class="comment">/**2**/</span></span><br><span class="line">Integer c = <span class="number">128</span>; <span class="comment">//Integer.valueOf(128)</span></span><br><span class="line">Integer d = <span class="number">128</span>; <span class="comment">//Integer.valueOf(128)</span></span><br><span class="line">c == d;<span class="comment">//false</span></span><br><span class="line"><span class="comment">/**3**/</span></span><br><span class="line">Integer e = <span class="number">127</span>; <span class="comment">//Integer.valueOf(127)</span></span><br><span class="line">Integer f = <span class="keyword">new</span> Integer(<span class="number">127</span>); <span class="comment">//new instance</span></span><br><span class="line">e == f;<span class="comment">//false</span></span><br><span class="line"><span class="comment">/**4**/</span></span><br><span class="line">Integer g = <span class="keyword">new</span> Integer(<span class="number">127</span>); <span class="comment">//new instance</span></span><br><span class="line">Integer h = <span class="keyword">new</span> Integer(<span class="number">127</span>); <span class="comment">//new instance</span></span><br><span class="line">g == h;<span class="comment">//false</span></span><br><span class="line"><span class="comment">/**5**/</span></span><br><span class="line">Integer i = <span class="number">128</span>; <span class="comment">//unbox</span></span><br><span class="line"><span class="keyword">int</span> j = <span class="number">128</span>;</span><br><span class="line">i == j;<span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><ol>
+<li><p><code>Integer a = 127</code>转换为<code>Integer.valueOf(127)</code>，转换在内部做了缓存，使得两个 Integer 指向同一个对象，所以 == 返回 true。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public static Integer valueOf(int i) &#123; </span><br><span class="line">    if (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high) </span><br><span class="line">        return IntegerCache.cache[i + (-IntegerCache.low)]; </span><br><span class="line">    return new Integer(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>由于默认情况下会缓存[-128, 127]的数值，而 128 处于这个区间之外，故此时 == 返回false。</p>
+</li>
+<li><p>实例化的对象与缓存，以及实例化的对象之间， == 都会返回false。</p>
+</li>
+<li><p>装箱的 Integer 会先拆箱再比较，即数值比较，故 == 返回true。</p>
+</li>
+</ol>
+<h4 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h4><ul>
+<li>比较 Integer 的值请使用 equals，而不是 ==。</li>
+<li>注意 Integer 的 == 比较返回为真的范围是[-128, 127]。</li>
+</ul>
+<h3 id="字符串类型"><a href="#字符串类型" class="headerlink" title="字符串类型"></a>字符串类型</h3><h4 id="测试用例-1"><a href="#测试用例-1" class="headerlink" title="测试用例"></a>测试用例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**1**/</span></span><br><span class="line">String a = <span class="string">"1"</span>;</span><br><span class="line">String b = <span class="string">"1"</span>;</span><br><span class="line">a == b;<span class="comment">//true</span></span><br><span class="line"><span class="comment">/**2**/</span></span><br><span class="line">String c = <span class="keyword">new</span> String(<span class="string">"2"</span>);</span><br><span class="line">String d = <span class="keyword">new</span> String(<span class="string">"2"</span>);</span><br><span class="line">c == d;<span class="comment">//false</span></span><br><span class="line"><span class="comment">/**3**/</span></span><br><span class="line">String e = <span class="keyword">new</span> String(<span class="string">"3"</span>).intern();</span><br><span class="line">String f = <span class="keyword">new</span> String(<span class="string">"3"</span>).intern();</span><br><span class="line">e == f;<span class="comment">//true</span></span><br><span class="line"><span class="comment">/**4**/</span></span><br><span class="line">String g = <span class="keyword">new</span> String(<span class="string">"4"</span>);</span><br><span class="line">String h = <span class="keyword">new</span> String(<span class="string">"4"</span>);</span><br><span class="line">g.equals(h);<span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="字符串常量池机制"><a href="#字符串常量池机制" class="headerlink" title="字符串常量池机制"></a>字符串常量池机制</h4><p>字符串常量池机制的设计初衷是为了节省内存。当代码中出现双引号形式创建字符串对象时，JVM 会先对这个字符串进行检查，如果字符串常量池中<strong>存在相同内容的字符串对象的引用</strong>，则将这个引用返回；否则，<strong>创建新的字符串对象，然后将这个引用放入字符串常量池</strong>，并返回该引用。这种机制，就是字符串驻留或池化。</p>
+<h4 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h4><ol>
+<li>由于字符串驻留机制，故用双引号赋值的两个内容相等的字符串，== 返回true。</li>
+<li>实例化的两个对象引用不同，故 == 返回false。</li>
+<li>使用 String 提供的 intern 方法也会走常量池机制，所以同样能得到 true。</li>
+</ol>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>虽然使用 new 声明的字符串调用 intern 方法，也可以让字符串进行驻留，但在业务代码中滥用 intern，可能会产生性能问题。</p>
+<p><strong>原因</strong>：字符串常量池是一个固定容量的 Map。如果容量太小（Number of buckets=60013）、字符串太多（1000 万个字符串），那么每一个桶中的字符串数量会非常多，所以搜索起来就很慢。</p>
+<p><strong>解决</strong>：解决方式是，设置 JVM 参数 -XX:StringTableSize，指定更多的桶。</p>
+<p><strong>结论</strong>：没事别轻易用 intern，如果要用一定要注意控制驻留的字符串的数量，并留意常量表的各项指标。</p>
+<h2 id="equals-的实现"><a href="#equals-的实现" class="headerlink" title="equals 的实现"></a>equals 的实现</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>equals 在 Object 类中的实现方式，其实就是 == 判断；而 String 和 Integer 都重写了 equals 方法。因此，新定义的类如果不重写 equals 方法，则默认使用 == 判等，比较的是对象的引用。</p>
+<h3 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h3><blockquote>
+<p>如何实现 equals？</p>
+</blockquote>
+<ol>
+<li>指针判等，若相等则返回true；</li>
+<li>判空，若比较对象为空则返回false；</li>
+<li>判断两个对象类型，若不同则返回false；</li>
+<li>进行类型转换，逐一判断所有字段。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public boolean equals(Object o) &#123; </span><br><span class="line">    if (this == o) return true; </span><br><span class="line">    if (o == null || getClass() != o.getClass()) return false; </span><br><span class="line">    NewClass that = (NewClass) o; </span><br><span class="line">    return x == that.x &amp;&amp; y == that.y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="hashCode"><a href="#hashCode" class="headerlink" title="hashCode"></a>hashCode</h1><h2 id="概述-2"><a href="#概述-2" class="headerlink" title="概述"></a>概述</h2><p>由源码注释可知，hashCode 会返回对象的哈希值，该方法会影响散列表，如HashTable。</p>
+<h2 id="注意-1"><a href="#注意-1" class="headerlink" title="注意"></a>注意</h2><p><strong>注意 hashCode 要与 equals 配对实现</strong>。</p>
+<p>散列表需要使用 hashCode 来定位元素放到哪个桶。如果自定义对象没有实现自定义的 hashCode 方法，就会使用 Object 超类的默认实现，得到的两个 hashCode 是不同的，导致无法满足需求。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>重写 hashCode 方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override </span><br><span class="line">public int hashCode() &#123; </span><br><span class="line">    return Objects.hash(x, y); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="compareTo"><a href="#compareTo" class="headerlink" title="compareTo"></a>compareTo</h1><h2 id="概述-3"><a href="#概述-3" class="headerlink" title="概述"></a>概述</h2><p>该方法由<code>Comparable</code>接口定义，用于做排序时的比较，返回值为负数、零和正数，分别代表少于、等于和多于。</p>
+<h2 id="注意-2"><a href="#注意-2" class="headerlink" title="注意"></a>注意</h2><p>如果要使用 Collections 的排序，则自定义类就要实现 Comparable。</p>
+<p>而重写 compareTo 时要注意其逻辑与 equals 保持一致。</p>
+<h2 id="实现-1"><a href="#实现-1" class="headerlink" title="实现"></a>实现</h2><p>重写compareTo方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span> </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(NewClass other)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Comparator.comparing(NewClass::getA) </span><br><span class="line">            .thenComparingInt(NewClass::getB) </span><br><span class="line">            .compare(<span class="keyword">this</span>, other); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="结论-1"><a href="#结论-1" class="headerlink" title="结论"></a>结论</h1><p><strong>对于自定义的类型，如果要实现 Comparable，请记得 equals、hashCode、compareTo 三者逻辑一致</strong>。</p>
+<h1 id="还有点啥"><a href="#还有点啥" class="headerlink" title="还有点啥"></a>还有点啥</h1><ul>
+<li>建议在 IDE 中安装<a href="https://github.com/alibaba/p3c" target="_blank" rel="noopener">阿里巴巴的 Java 规约插件</a>。</li>
+<li><strong>getClass 和 instanceof 的区别</strong>：<ul>
+<li>instanceof进行类型检查规则是:判断是否为该类或者该类的子类；</li>
+<li>getClass获得类型信息采用==来进行检查是否相等的操作是严格的判断。不会存在继承方面的考虑。</li>
+</ul>
+</li>
+</ul>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2020/03/28/【JAVA业务需要注意的点】判等问题/">http://eazon.xyz/2020/03/28/【JAVA业务需要注意的点】判等问题/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/28/【JAVA业务需要注意的点】数值问题/">【JAVA业务需要注意的点】数值问题</a>
+            
+            
+            <a class="next" rel="next" href="/2020/01/02/【JDK源码阅读系列】Object-类结构的“根”/">【JDK源码阅读系列】Object--类结构的“根”</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>

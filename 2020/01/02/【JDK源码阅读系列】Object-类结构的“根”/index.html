@@ -136,9 +136,7 @@
 <li>Java中所有类都继承于Object类，即Object是其他类的父类。</li>
 <li>所有的对象，包括泛型，都需要继承Object类中的方法。</li>
 </ul>
-<h1 id="核心方法"><a href="#核心方法" class="headerlink" title="核心方法"></a>核心方法</h1><blockquote>
-<p>native是与C++ 联合开发的时候用的。使用native关键字说明这个方法是原生函数，被编译成了DLL，由java去调用。</p>
-</blockquote>
+<h1 id="核心方法"><a href="#核心方法" class="headerlink" title="核心方法"></a>核心方法</h1><p>native是与C++ 联合开发的时候用的。使用native关键字说明这个方法是原生函数，被编译成了DLL，由java去调用。</p>
 <h2 id="equals"><a href="#equals" class="headerlink" title="equals"></a>equals</h2><h3 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h3><p>比较是否对象是否相等</p>
 <h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><ul>
 <li><strong>自反性</strong>：对于任何非null的引用值x，x.equals(x)必须返回true。</li>
@@ -152,12 +150,8 @@
 <p>重写equals方法，先判断对象是否为null，再判断对象是否指定类型，最后判断对象的属性是否相等。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(obj == <span class="keyword">null</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(!(obj <span class="keyword">instanceof</span> User))&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    User user = (User)obj;</span><br><span class="line">    <span class="keyword">return</span> user.age == age &amp;&amp; user.name.equals(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<blockquote>
 <p><strong>注意</strong>：在应用场景中，假设变量X要与常量C进行比较，一般用<code>C.equals(X)</code>而不是<code>X.equals(C)</code>，由于<code>equals</code>的调用者是非空的，而我们已知常量C为非空，这样避免抛出异常。</p>
-</blockquote>
-<blockquote>
 <p><strong>当覆盖equals方法时，必须同时覆盖hashCode方法</strong>。这是为了维护使用hashCode来判断是否为同一对象的方法，如HashMap。</p>
-</blockquote>
 <h2 id="hashCode"><a href="#hashCode" class="headerlink" title="hashCode"></a>hashCode</h2><h3 id="功能-1"><a href="#功能-1" class="headerlink" title="功能"></a>功能</h3><p>返回对象的哈希值，主要是对哈希表提供支持，如HashMap。</p>
 <h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a.hashCode()</span><br></pre></td></tr></table></figure>
 
@@ -193,9 +187,7 @@
 
 </li>
 </ul>
-<blockquote>
 <p>《Effective Java》的作者Joshua Bloch建议我们不应该实现Cloneable接口，而应该使用拷贝构造器或者拷贝工厂。</p>
-</blockquote>
 <h2 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="toString"></a>toString</h2><h3 id="功能-3"><a href="#功能-3" class="headerlink" title="功能"></a>功能</h3><p>将对象以字符串的形式表示。</p>
 <h3 id="特性-2"><a href="#特性-2" class="headerlink" title="特性"></a>特性</h3><ul>
 <li>默认表达式：<code>getClass().getName() + &#39;@&#39; + Integer.toHexString(hashCode())</code>，即类的名称的字符串+@+对象的哈希码的无符号的十六进制</li>
@@ -216,9 +208,7 @@
 <p>上述执行结果：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Waiting <span class="keyword">for</span> b to complete...</span><br><span class="line">b is counting...</span><br><span class="line">Total is:<span class="number">499500</span></span><br></pre></td></tr></table></figure>
 
-<blockquote>
 <p>从上述结果可以看出，线程A并不是在线程B调用notify时被立即唤醒，而是等待线程B的同步代码块执行完后，再从wait方法后继续执行。<code>synchronized同步方法（块）同一时刻只允许一个线程在里面</code>，线程B不退出，线程A就阻塞。</p>
-</blockquote>
 <p><img src="https://user-gold-cdn.xitu.io/2019/3/21/1699bd8849de15ce?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt><br><strong>原理</strong>：</p>
 <ol>
 <li>当线程A调用wait方法后，线程A让出锁，同时加入锁对象等待队列。</li>
@@ -283,6 +273,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/03/28/【JAVA业务需要注意的点】判等问题/">【JAVA业务需要注意的点】判等问题</a>
             
             
             <a class="next" rel="next" href="/2019/12/03/【数据结构与算法】堆/">【数据结构与算法】堆</a>
