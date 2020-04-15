@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>【JAVA业务需要注意的点】日志问题 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#查看日志框架的依赖关系"><span class="toc-text">查看日志框架的依赖关系</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#日志配置"><span class="toc-text">日志配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题一：重复记录"><span class="toc-text">问题一：重复记录</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#错误配置-logger-的继承关系"><span class="toc-text">错误配置 logger 的继承关系</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#场景"><span class="toc-text">场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方式"><span class="toc-text">解决方式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#错误配置-LevelFilter"><span class="toc-text">错误配置 LevelFilter</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#场景-1"><span class="toc-text">场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分析"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方式-1"><span class="toc-text">解决方式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题二：异步日志的性能问题"><span class="toc-text">问题二：异步日志的性能问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#概述-1"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AsyncAppender-异步日志"><span class="toc-text">AsyncAppender 异步日志</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#场景-2"><span class="toc-text">场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分析-1"><span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#解决方式-2"><span class="toc-text">解决方式</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#日志记录"><span class="toc-text">日志记录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#注意"><span class="toc-text">注意</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#结论"><span class="toc-text">结论</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#还有点啥"><span class="toc-text">还有点啥</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【JAVA业务需要注意的点】日志问题</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 15, 2020&nbsp;&nbsp;18:19:32</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/JAVA业务需要注意的点/">JAVA业务需要注意的点</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <blockquote>
+<p>本文旨在阐述日志框架使用配置和记录时需要注意的点。</p>
+</blockquote>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Java 体系中有众多的日志框架，包括Logback、Log4j、Log4j2、commons-logging、JDK 自带的 java.util.logging 等。</p>
+<p>为了做日志的统一管理，就有了 SLF4J（Simple Logging Facade For Java）。</p>
+<p>SL4J 实现了三种功能：</p>
+<ol>
+<li><strong>统一 API</strong>。SL4J 提供了统一的日志门面的API。</li>
+<li><strong>桥接功能</strong>。提供 API 把各种日志框架的 API 桥接到 SL4J 的 API 上。</li>
+<li><strong>适配功能</strong>。SLF4J 只是日志标准，还需要一个实际的日志框架。日志框架本身没有实现 SLF4J API，所以需要有一个前置转换。因此，SL4J 提供了 API ,可以实现 SLF4J API 和实际日志框架的绑定。<strong>Logback 就是按照 SLF4J API 标准实现的，因此不需要绑定模块做转换。</strong></li>
+</ol>
+<p><img src="https://static001.geekbang.org/resource/image/97/fe/97fcd8b55e5288c0e9954f070f1008fe.png" alt><br>注：虽然可以使用 log4j-over-slf4j 来实现 Log4j 桥接到 SLF4J，也可以使用 slf4j-log4j12 实现 SLF4J 适配到 Log4j，也把它们画到了一列，但是它不能同时使用它们，否则就会产生死循环。jcl 和 jul 也是同样的道理。</p>
+<h2 id="查看日志框架的依赖关系"><a href="#查看日志框架的依赖关系" class="headerlink" title="查看日志框架的依赖关系"></a>查看日志框架的依赖关系</h2><p>使用<code>mvn dependency:tree</code>命令可以查看一个maven工程的依赖关系。如，查看springboot工程的依赖关系，可以看到springboot中默认引入的日志框架中，log4j-to-slf4j 用于实现 Log4j2 API 到 SLF4J 的桥接，jul-to-slf4j 则是实现 java.util.logging API 到 SLF4J 的桥接。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+- org.springframework.boot:spring-boot-starter-logging:jar:2.2.1.RELEASE:compile</span><br><span class="line">|  +- ch.qos.logback:logback-classic:jar:1.2.3:compile</span><br><span class="line">|  |  \- ch.qos.logback:logback-core:jar:1.2.3:compile</span><br><span class="line">|  +- org.apache.logging.log4j:log4j-to-slf4j:jar:2.12.1:compile</span><br><span class="line">|  |  \- org.apache.logging.log4j:log4j-api:jar:2.12.1:compile</span><br><span class="line">|  \- org.slf4j:jul-to-slf4j:jar:1.7.29:compile</span><br></pre></td></tr></table></figure>
+
+<h1 id="日志配置"><a href="#日志配置" class="headerlink" title="日志配置"></a>日志配置</h1><h2 id="问题一：重复记录"><a href="#问题一：重复记录" class="headerlink" title="问题一：重复记录"></a>问题一：重复记录</h2><h3 id="错误配置-logger-的继承关系"><a href="#错误配置-logger-的继承关系" class="headerlink" title="错误配置 logger 的继承关系"></a>错误配置 logger 的继承关系</h3><h4 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h4><p>在 logger 中，配置了控制台的继承，导致在控制台输出了两次日志。这是由于<strong>同一条日志既会通过 logger 记录，也会发送到 root 记录</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;appender name=&quot;CONSOLE&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;</span><br><span class="line">    ...</span><br><span class="line">&lt;/appender&gt;</span><br><span class="line">&lt;logger name=&quot;&#123;applicationpath&#125;&quot; level=&quot;DEBUG&quot;&gt;</span><br><span class="line">    &lt;appender-ref ref=&quot;CONSOLE&quot;/&gt;</span><br><span class="line">&lt;/logger&gt;</span><br><span class="line">&lt;root level=&quot;INFO&quot;&gt;</span><br><span class="line">    &lt;appender-ref ref=&quot;CONSOLE&quot;/&gt;</span><br><span class="line">&lt;/root&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="解决方式"><a href="#解决方式" class="headerlink" title="解决方式"></a>解决方式</h4><ol>
+<li><p>去掉 logger中的继承关系。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;logger name=&quot;&#123;applicationpath&#125;&quot; level=&quot;DEBUG&quot;/&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果自定义的需要把日志输出到不同的 Appender，比如将应用的日志输出到文件 app.log、把其他框架的日志输出到控制台，可以设置的 additivity 属性为 false，这样就不会继承别的 Appender 了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;appender name=&quot;FILE&quot; class=&quot;ch.qos.logback.core.FileAppender&quot;&gt;</span><br><span class="line">        &lt;file&gt;app.log&lt;/file&gt;</span><br><span class="line">        ...</span><br><span class="line">    &lt;/appender&gt;</span><br><span class="line">    &lt;appender name=&quot;CONSOLE&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;</span><br><span class="line">		...</span><br><span class="line">	&lt;/appender&gt;</span><br><span class="line">    &lt;logger name=&quot;&#123;applicationpath&#125;&quot; level=&quot;DEBUG&quot; additivity=&quot;false&quot;&gt;</span><br><span class="line">        &lt;appender-ref ref=&quot;FILE&quot;/&gt;</span><br><span class="line">    &lt;/logger&gt;</span><br><span class="line">	&lt;root level=&quot;INFO&quot;&gt;</span><br><span class="line">		&lt;appender-ref ref=&quot;CONSOLE&quot; /&gt;</span><br><span class="line">	&lt;/root&gt;</span><br><span class="line">&lt;/appender&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="错误配置-LevelFilter"><a href="#错误配置-LevelFilter" class="headerlink" title="错误配置 LevelFilter"></a>错误配置 LevelFilter</h3><h4 id="场景-1"><a href="#场景-1" class="headerlink" title="场景"></a>场景</h4><p>定义 appender，想要输出 info 文件只记录 info 级别的日志，输出 error 文件记录 warn、error 级别的日志。由于对 LevelFilter 的错误使用，导致在 info 文件里也输出了 warn 和 error 级别的日志。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;appender name=&quot;INFO_FILE&quot; class=&quot;ch.qos.logback.core.FileAppender&quot;&gt;</span><br><span class="line">		&lt;File&gt;$&#123;logDir&#125;/$&#123;app.name&#125;_info.log&lt;/File&gt;</span><br><span class="line">		&lt;filter class=&quot;ch.qos.logback.classic.filter.LevelFilter&quot;&gt;</span><br><span class="line">			&lt;level&gt;INFO&lt;/level&gt;</span><br><span class="line">		&lt;/filter&gt;</span><br><span class="line">	    ...</span><br><span class="line">&lt;/appender&gt;</span><br><span class="line">&lt;appender name=&quot;ERROR_FILE&quot; class=&quot;ch.qos.logback.core.FileAppender&quot;&gt;</span><br><span class="line">	&lt;File&gt;$&#123;logDir&#125;/$&#123;app.name&#125;_error.log&lt;/File&gt;</span><br><span class="line">	&lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&gt;</span><br><span class="line">		&lt;level&gt;WARN&lt;/level&gt;</span><br><span class="line">	&lt;/filter&gt;</span><br><span class="line">	...</span><br><span class="line">&lt;/appender&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p><strong>ThresholdFilter 的作用</strong>：记录大于等于配置等级的日志。</p>
+<p><strong>LevelFilter 的作用</strong>：比较日志级别，做相应处理。如果匹配到配置的等级就交给 onMatch 处理，否则就 交给 onMismatch 处理，默认交给下一个过滤器处理。</p>
+<p>在 LevelFilter 中，由于没有配置 <code>onMatch</code> 和 <code>onMismatch</code> 属性，所以相当于这个过滤器是无用的，导致 INFO 以上级别的日志都记录了。</p>
+<h4 id="解决方式-1"><a href="#解决方式-1" class="headerlink" title="解决方式"></a>解决方式</h4><p>配置 LevelFilter 的 onMatch 属性为 ACCEPT，表示接收 INFO 级别的日志；配置 onMismatch 属性为 DENY，表示除了 INFO 级别都不记录。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;appender name=&quot;INFO_FILE&quot; class=&quot;ch.qos.logback.core.FileAppender&quot;&gt;</span><br><span class="line">  &lt;File&gt;$&#123;logDir&#125;/$&#123;app.name&#125;_info.log&lt;/File&gt;</span><br><span class="line">  &lt;filter class=&quot;ch.qos.logback.classic.filter.LevelFilter&quot;&gt;</span><br><span class="line">    &lt;level&gt;INFO&lt;/level&gt;</span><br><span class="line">    &lt;onMatch&gt;ACCEPT&lt;/onMatch&gt;</span><br><span class="line">    &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;</span><br><span class="line">  &lt;/filter&gt;</span><br><span class="line">  ...</span><br><span class="line">&lt;/appender&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="问题二：异步日志的性能问题"><a href="#问题二：异步日志的性能问题" class="headerlink" title="问题二：异步日志的性能问题"></a>问题二：异步日志的性能问题</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p><strong>场景</strong>：日志框架在记录日志时，采用的是同步记录。因此，当有大量日志写入时，会影响业务逻辑执行耗时和吞吐量。</p>
+<p><strong>解决方式</strong>：使用 Logback 提供的 <code>AsyncAppender</code> 即可实现<strong>异步的日志记录</strong>。定义一个异步 Appender ASYNCFILE，包装之前的同步文件日志记录的 FileAppender，就可以实现异步记录日志到文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">&lt;appender name=&quot;ASYNCFILE&quot; class=&quot;ch.qos.logback.classic.AsyncAppender&quot;&gt;</span><br><span class="line">    &lt;appender-ref ref=&quot;FILE&quot;/&gt;</span><br><span class="line">&lt;/appender&gt;</span><br><span class="line">&lt;root level=&quot;INFO&quot;&gt;</span><br><span class="line">    &lt;appender-ref ref=&quot;ASYNCFILE&quot;/&gt;</span><br><span class="line">    &lt;appender-ref ref=&quot;CONSOLE&quot;/&gt;</span><br><span class="line">&lt;/root&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="AsyncAppender-异步日志"><a href="#AsyncAppender-异步日志" class="headerlink" title="AsyncAppender 异步日志"></a>AsyncAppender 异步日志</h3><h4 id="场景-2"><a href="#场景-2" class="headerlink" title="场景"></a>场景</h4><p>AsyncAppender 异步日志使用时可能出现的问题有：</p>
+<ul>
+<li>记录异步日志撑爆内存；</li>
+<li>记录异步日志出现日志丢失；</li>
+<li>记录异步日志出现阻塞。</li>
+</ul>
+<p>原因：<strong>AsyncAppender 的参数配置有误</strong>。</p>
+<h4 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h4><p>AsyncAppender 提供了一些参数配置：</p>
+<ul>
+<li><strong>includeCallerData</strong>：用于控制<strong>是否收集调用方数据</strong>，默认是 false，此时方法行号、方法名等信息将不能显示。</li>
+<li><strong>queueSize</strong>：用于控制<strong>阻塞队列大小</strong>，使用的 ArrayBlockingQueue 阻塞队列，默认大小是 256，即内存中最多保存 256 条日志。</li>
+<li><strong>discardingThreshold</strong>：控制<strong>丢弃日志的阈值</strong>，主要是防止队列满后阻塞。默认情况下，队列剩余量低于队列长度的 20%，就会丢弃 TRACE、DEBUG 和 INFO 级别的日志。</li>
+<li><strong>neverBlock</strong>：用于控制队列满的时候，加入的数据<strong>是否直接丢弃</strong>，不会阻塞等待，默认是 false。</li>
+</ul>
+<p>参数配置不合理可能造成的影响：</p>
+<ul>
+<li><strong><code>queueSize</code>配置太大</strong>：OOM。</li>
+<li><strong><code>queueSize</code>配置太小，且 <code>discardingThreshold</code>配置大于0（或者均为默认值）</strong>：队列剩余容量少于 discardingThreshold 的配置就会丢弃 &lt;=INFO 的日志。</li>
+<li><strong><code>neverBlock</code> 默认为 false</strong>：意味着总可能会出现阻塞。如果 discardingThreshold 为 0，那么队列满时再有日志写入就会阻塞；如果 discardingThreshold 不为 0，也只会丢弃 &lt;=INFO 级别的日志，那么出现大量错误日志时，还是会阻塞程序。</li>
+</ul>
+<h4 id="解决方式-2"><a href="#解决方式-2" class="headerlink" title="解决方式"></a>解决方式</h4><p>根据性能优先，还是数据不丢优先，来配置参数：</p>
+<ul>
+<li>如果考虑<strong>绝对性能为先</strong>，那就设置 <code>neverBlock</code> 为 true，永不阻塞。</li>
+<li>如果考虑<strong>绝对不丢数据为先</strong>，那就设置 <code>discardingThreshold</code> 为 0，即使是 &lt;=INFO 的级别日志也不会丢，但最好把 <code>queueSize</code> 设置大一点，毕竟默认的 <code>queueSize</code> 显然太小，太容易阻塞。</li>
+<li>如果希望<strong>兼顾两者</strong>，可以丢弃不重要的日志，把 <code>queueSize</code> 设置大一点，再设置一个合理的 <code>discardingThreshold</code>。</li>
+</ul>
+<h1 id="日志记录"><a href="#日志记录" class="headerlink" title="日志记录"></a>日志记录</h1><h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><ul>
+<li><p>使用{}占位符语法不能通过延迟参数值获取，来解决日志数据获取的性能问题。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log.debug(&quot;debug:&#123;&#125;&quot;, delay_onesecond(&quot;debug2&quot;));</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>可以使用 Log4j2 的 API，利用其 lamda 表达式，让参数延迟到真正需要记录日志时再获取，提高读取性能。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">log.debug(&quot;debug:&#123;&#125;&quot;, ()-&gt;delay_onesecond(&quot;debug&quot;));</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>日志框架提供的参数化日志记录方式不能完全取代日志级别的判断。如果日志量很大，获取日志参数代价也很大，就要进行相应日志级别的判断，避免不记录日志也要花费时间获取日志参数的问题。</p>
+<h1 id="还有点啥"><a href="#还有点啥" class="headerlink" title="还有点啥"></a>还有点啥</h1><ul>
+<li><strong>EvaluatorFilter（求值过滤器），用于判断日志是否符合某个条件</strong>。配合使用标记和 EvaluatorFilter，可以实现日志的按标签过滤。比如，可以给输出测试结果的那条日志上做 time 标记。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;appender name=&quot;CONSOLE&quot; class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;</span><br><span class="line">        ...</span><br><span class="line">        &lt;filter class=&quot;ch.qos.logback.core.filter.EvaluatorFilter&quot;&gt;</span><br><span class="line">            &lt;evaluator class=&quot;ch.qos.logback.classic.boolex.OnMarkerEvaluator&quot;&gt;</span><br><span class="line">                &lt;marker&gt;time&lt;/marker&gt;</span><br><span class="line">            &lt;/evaluator&gt;</span><br><span class="line">            &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;</span><br><span class="line">            &lt;onMatch&gt;ACCEPT&lt;/onMatch&gt;</span><br><span class="line">        &lt;/filter&gt;</span><br><span class="line">    &lt;/appender&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ul>
+<li><a href="http://logback.qos.ch/manual/" target="_blank" rel="noopener">logback官方文档</a> 以及 java相关源码</li>
+</ul>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2020/04/15/【JAVA业务需要注意的点】日志问题/">http://eazon.xyz/2020/04/15/【JAVA业务需要注意的点】日志问题/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/04/15/【数据结构与算法二】数组/">【数据结构与算法二】数组</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
