@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>【数据结构与算法二】数组 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#操作"><span class="toc-text">操作</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#插入"><span class="toc-text">插入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#概述-1"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优化"><span class="toc-text">优化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#删除"><span class="toc-text">删除</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#概述-2"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优化-1"><span class="toc-text">优化</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#越界问题"><span class="toc-text">越界问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#容器"><span class="toc-text">容器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#数组的优势"><span class="toc-text">数组的优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#容器的优势"><span class="toc-text">容器的优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对比总结"><span class="toc-text">对比总结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#还有点啥"><span class="toc-text">还有点啥</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【数据结构与算法二】数组</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 15, 2020&nbsp;&nbsp;17:45:15</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/数据结构与算法/">数据结构与算法</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <blockquote>
+<p>本文旨在阐述数组，以及数组的相关操作和时间复杂度分析。</p>
+</blockquote>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>数组（Array）是一种<strong>线性表</strong>数据结构。它用一组<strong>连续</strong>的内存空间，来存储一组具有<strong>相同类型</strong>的数据。</p>
+<p>关键词：</p>
+<ul>
+<li><strong>线性表</strong>（Linear List）：顾名思义，线性表就是<strong>数据排成像一条线一样的结构</strong>。每个线性表上的数据最多只有前和后两个方向。其实除了数组，链表、队列、栈等也是线性表结构。而<strong>与它相对立的概念是非线性表</strong>，比如二叉树、堆、图等。之所以叫非线性，是因为，在非线性表中，数据之间并不是简单的前后关系。</li>
+<li><strong>连续的内存空间，相同类型的数据</strong>：数组的特性，使数组数据可以“<strong>随机访问</strong>”，但同时，为了保证连续性，插入和删除操作可能需要大量的数据迁移操作。</li>
+</ul>
+<p><img src="https://static001.geekbang.org/resource/image/b6/77/b6b71ec46935130dff5c4b62cf273477.jpg" alt="线性表"></p>
+<p><img src="https://static001.geekbang.org/resource/image/6e/69/6ebf42641b5f98f912d36f6bf86f6569.jpg" alt="非线性表"></p>
+<h1 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h1><blockquote>
+<p>数组和链表的区别？</p>
+</blockquote>
+<p>链表适合插入、删除，时间复杂度 O(1)；<del>数组适合查找，查找时间复杂度为 O(1)</del>。</p>
+<p>数组支持随机访问，根据下标随机访问的时间复杂度为 O(1)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//定义整型数据data保存数据</span><br><span class="line">public int data[];</span><br><span class="line">//定义数组长度</span><br><span class="line">private int n;</span><br><span class="line">//定义中实际个数</span><br><span class="line">private int count;</span><br></pre></td></tr></table></figure>
+
+<h2 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>如果在数组的末尾插入元素，那就不需要移动数据了，此时时间复杂度，即最好时间复杂度为 <code>O(1)</code>。但如果在数组的开头插入元素，那所有的数据都需要依次往后移动一位，所以最坏时间复杂度是 <code>O(n)</code>。 因为在每个位置插入元素的概率是一样的，所以平均情况时间复杂度为 <code>(1+2+…n)/n=O(n)</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">//插入元素:头部插入，尾部插入</span><br><span class="line">public boolean insert(int index, int value)&#123;</span><br><span class="line">    // 数组空间已满</span><br><span class="line">    if (count == n) &#123;</span><br><span class="line">        System.out.println(&quot;没有可插入的位置&quot;);</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    // 如果count还没满，那么就可以插入数据到数组中</span><br><span class="line">    // 位置不合法</span><br><span class="line">    if (index &lt; 0||index &gt; count ) &#123;</span><br><span class="line">        System.out.println(&quot;位置不合法&quot;);</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    // 位置合法</span><br><span class="line">    for( int i = count; i &gt; index; --i)&#123;</span><br><span class="line">        data[i] = data[i - 1];</span><br><span class="line">    &#125;</span><br><span class="line">    data[index] = value;</span><br><span class="line">    ++count;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>正常的插入操作是为了确保数组的有序性。如果数组中存储的数据并没有任何规律，数组只是被当作一个存储数据的集合，则可以将要插入位置的元素挪到最后，然后将元素插入。<br><img src="https://static001.geekbang.org/resource/image/3f/dc/3f70b4ad9069ec568a2caaddc231b7dc.jpg" alt></p>
+<h2 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h2><h3 id="概述-2"><a href="#概述-2" class="headerlink" title="概述"></a>概述</h3><p>和插入类似，如果删除数组末尾的数据，则最好情况时间复杂度为 <code>O(1)</code>；如果删除开头的数据，则最坏情况时间复杂度为 <code>O(n)</code>；平均情况时间复杂度也为 <code>O(n)</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//根据索引，删除数组中元素</span><br><span class="line">public boolean delete(int index)&#123;</span><br><span class="line">    if (index&lt;0 || index &gt;=count) return false;</span><br><span class="line">    //从删除位置开始，将后面的元素向前移动一位</span><br><span class="line">    for (int i=index+1; i&lt;count; ++i)&#123;</span><br><span class="line">        data[i-1] = data[i];</span><br><span class="line">    &#125;</span><br><span class="line">    --count;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="优化-1"><a href="#优化-1" class="headerlink" title="优化"></a>优化</h3><p>如果不需要确保数组中数据的连续性，可以将删除操作集中处理，提高删除的效率。如将需要删除的数据进行标记，当数组没有更多空间存储数据时，触发真正的删除操作，减少数据的搬移，提高性能。这其实就是<strong>JVM 标记清除垃圾回收算法的核心思想</strong>。</p>
+<h1 id="越界问题"><a href="#越界问题" class="headerlink" title="越界问题"></a>越界问题</h1><p>在 C 语言中，数组越界需要程序员警惕，否则可能出现无限循环的情况。而在 Java 语言中，数组会做越界检查，若出现越界的情况，会抛出java.lang.ArrayIndexOutOfBoundsException异常。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">//C：循环打印 hello world</span><br><span class="line">int main(int argc, char* argv[])&#123;</span><br><span class="line">    int i = 0;</span><br><span class="line">    int arr[3] = &#123;0&#125;;</span><br><span class="line">    for(; i&lt;=3; i++)&#123;</span><br><span class="line">        arr[i] = 0;</span><br><span class="line">        printf(&quot;hello world\n&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//Java：抛出ArrayIndexOutOfBoundsException异常</span><br><span class="line">int[] a = new int[3];</span><br><span class="line">a[3] = 10;</span><br></pre></td></tr></table></figure>
+
+<h1 id="容器"><a href="#容器" class="headerlink" title="容器"></a>容器</h1><p>在 Java 中，经常使用 ArrayList 容器类来操作集合。</p>
+<blockquote>
+<p>那么，数组与容器相比，各有什么优势？</p>
+</blockquote>
+<h2 id="数组的优势"><a href="#数组的优势" class="headerlink" title="数组的优势"></a>数组的优势</h2><ol>
+<li>ArrayList 无法存储基本类型，比如 int、long，需要封装为 Integer、Long 类，而 Autoboxing、Unboxing 则有一定的性能消耗，所以如果特别关注性能，或者希望使用基本类型，就可以选用数组。</li>
+<li>如果数据大小事先已知，并且对数据的操作非常简单，用不到 ArrayList 提供的大部分方法，也可以直接使用数组。</li>
+</ol>
+<h2 id="容器的优势"><a href="#容器的优势" class="headerlink" title="容器的优势"></a>容器的优势</h2><ol>
+<li>封装了数组的操作细节。</li>
+<li><strong>支持动态扩容</strong>。注意在使用时，最好先根据需要指定初始化的集合容量。</li>
+</ol>
+<h2 id="对比总结"><a href="#对比总结" class="headerlink" title="对比总结"></a>对比总结</h2><p>对于业务开发，直接使用容器就足够了，省时省力。毕竟损耗一丢丢性能，完全不会影响到系统整体的性能。但如果是做一些非常底层的开发，比如开发网络框架，性能的优化需要做到极致，这个时候数组就会优于容器，成为首选。</p>
+<h1 id="还有点啥"><a href="#还有点啥" class="headerlink" title="还有点啥"></a>还有点啥</h1><blockquote>
+<p>为什么大多数编程语言中，数组要从 0 开始编号，而不是从 1 开始呢？</p>
+</blockquote>
+<ol>
+<li>性能原因。从数组存储的内存模型上来看，“下标”最确切的定义应该是“偏移（offset）”。如果用 a 来表示数组的首地址，a[0]就是偏移为 0 的位置，也就是首地址，a[k]就表示偏移 k 个 type_size 的位置，则计算a[k]的内存地址为<code>a[k]_address = base_address + k * type_size</code>。若数组从1开始，则计算公式变成<code>a[k]_address = base_address + (k-1)*type_size</code>。对比发现，若从1开始，寻址需要做多一次减法运算，对于最基础的数据结构数组来说，无法达到极致的效率。</li>
+<li>历史原因。C 语言设计者用 0 开始计数数组下标，因此大多数语言进行效仿。同时，很多语言中数组也并不是从 0 开始计数的，比如 Matlab。甚至还有一些语言支持负数下标，比如 Python。</li>
+</ol>
+<blockquote>
+<p>二维数组内存寻址?</p>
+</blockquote>
+<p>对于 m * n 的数组，a [ i ][ j ] (i &lt; m,j &lt; n)的地址为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">address = base_address + ( i * n + j) * type_size</span><br></pre></td></tr></table></figure>
+
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2020/04/15/【数据结构与算法二】数组/">http://eazon.xyz/2020/04/15/【数据结构与算法二】数组/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/数据结构/"># 数据结构</a>
+                    
+                        <a href="/tags/线性表/"># 线性表</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/04/15/【数据结构与算法一】复杂度分析/">【数据结构与算法一】复杂度分析</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>

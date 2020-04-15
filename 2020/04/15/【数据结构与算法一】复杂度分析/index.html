@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>【数据结构与算法一】复杂度分析 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#时间复杂度"><span class="toc-text">时间复杂度</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#大O复杂度表示法"><span class="toc-text">大O复杂度表示法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#时间复杂度分析原则"><span class="toc-text">时间复杂度分析原则</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#原则一：只关注循环体"><span class="toc-text">原则一：只关注循环体</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原则二：加法法则"><span class="toc-text">原则二：加法法则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#原则三：乘法法则"><span class="toc-text">原则三：乘法法则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常见的时间复杂度"><span class="toc-text">常见的时间复杂度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#分类"><span class="toc-text">分类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#O-1"><span class="toc-text">O(1)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#O-logn-、O-nlogn"><span class="toc-text">O(logn)、O(nlogn)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#O-m-n-、O-m-n"><span class="toc-text">O(m+n)、O(m*n)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相关概念"><span class="toc-text">相关概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#最好-最坏情况时间复杂度"><span class="toc-text">最好/最坏情况时间复杂度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#平均情况时间复杂度"><span class="toc-text">平均情况时间复杂度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#均摊时间复杂度"><span class="toc-text">均摊时间复杂度</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#空间复杂度"><span class="toc-text">空间复杂度</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述-1"><span class="toc-text">概述</span></a></li></ol></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【数据结构与算法一】复杂度分析</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 15, 2020&nbsp;&nbsp;17:38:00</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/数据结构与算法/">数据结构与算法</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <blockquote>
+<p>本文旨在分析时间复杂度与空间复杂度，以及时间复杂度的相关概念。</p>
+</blockquote>
+<h1 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>时间复杂度的全称是渐进时间复杂度，表示<strong>算法的执行时间与数据规模之间的增长关系</strong>。</p>
+<h2 id="大O复杂度表示法"><a href="#大O复杂度表示法" class="headerlink" title="大O复杂度表示法"></a>大O复杂度表示法</h2><p>大 O 时间复杂度实际上并不具体表示代码真正的执行时间，而是表示代码执行时间随数据规模增长的变化趋势，所以，也叫作渐进时间复杂度（asymptotic time complexity），简称时间复杂度。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">T(n) = O(f(n))</span><br></pre></td></tr></table></figure>
+
+<h2 id="时间复杂度分析原则"><a href="#时间复杂度分析原则" class="headerlink" title="时间复杂度分析原则"></a>时间复杂度分析原则</h2><h3 id="原则一：只关注循环体"><a href="#原则一：只关注循环体" class="headerlink" title="原则一：只关注循环体"></a>原则一：只关注循环体</h3><p>在分析一个算法、一段代码的时间复杂度的时候，只关注循环执行次数最多的那一段代码即可。</p>
+<h3 id="原则二：加法法则"><a href="#原则二：加法法则" class="headerlink" title="原则二：加法法则"></a>原则二：加法法则</h3><p><strong>概念</strong>：<strong>总复杂度等于量级最大的那段代码的复杂度。</strong></p>
+<p><strong>公式</strong>：如果 <code>T1(n) = O(f(n))</code>，<code>T2(n) = O(g(n))</code>；那么 <code>T(n) = T1(n)+T2(n) = max(O(f(n))</code>, <code>O(g(n))) = O(max(f(n), g(n)))</code>。</p>
+<h3 id="原则三：乘法法则"><a href="#原则三：乘法法则" class="headerlink" title="原则三：乘法法则"></a>原则三：乘法法则</h3><p><strong>概念</strong>：<strong>嵌套代码的复杂度等于嵌套内外代码复杂度的乘积。</strong></p>
+<p><strong>公式</strong>：如果 <code>T1(n) = O(f(n))</code>，<code>T2(n) = O(g(n))</code>；那么 <code>T(n) = T1(n)*T2(n) = O(f(n))*O(g(n)) = O(f(n)*g(n))</code>。</p>
+<p><strong>场景</strong>：</p>
+<p><strong>嵌套循环</strong>：假设在方法call中循环调用方法f，call的时间复杂度为 T1，f的时间复杂度为 T2，则总的时间复杂度为 <code>T(n) = T1(n) * T2(n) = O(n*n) = O(n2)</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">int cal(int n) &#123;</span><br><span class="line">   int ret = 0; </span><br><span class="line">   int i = 1;</span><br><span class="line">   for (; i &lt; n; ++i) &#123;</span><br><span class="line">     ret = ret + f(i);</span><br><span class="line">   &#125; </span><br><span class="line"> &#125; </span><br><span class="line"> </span><br><span class="line"> int f(int n) &#123;</span><br><span class="line">  int sum = 0;</span><br><span class="line">  int i = 1;</span><br><span class="line">  for (; i &lt; n; ++i) &#123;</span><br><span class="line">    sum = sum + i;</span><br><span class="line">  &#125; </span><br><span class="line">  return sum;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="常见的时间复杂度"><a href="#常见的时间复杂度" class="headerlink" title="常见的时间复杂度"></a>常见的时间复杂度</h2><p><img src="https://static001.geekbang.org/resource/image/37/0a/3723793cc5c810e9d5b06bc95325bf0a.jpg" alt="复杂度量级"></p>
+<p><img src="https://static001.geekbang.org/resource/image/49/04/497a3f120b7debee07dc0d03984faf04.jpg" alt></p>
+<h3 id="分类"><a href="#分类" class="headerlink" title="分类"></a>分类</h3><ul>
+<li><strong>多项式量级</strong>：<code>O(1)</code>，<code>O(logn)</code>，<code>O(n)</code>，<code>O(n)</code>，<code>O(n^k)</code></li>
+<li>非多项式量级：<code>O(2n)</code> 和 <code>O(n!)</code></li>
+</ul>
+<h3 id="O-1"><a href="#O-1" class="headerlink" title="O(1)"></a>O(1)</h3><p>一般情况下，只要算法中不存在循环语句、递归语句，即使有成千上万行的代码，其时间复杂度也是Ο(1)。</p>
+<h3 id="O-logn-、O-nlogn"><a href="#O-logn-、O-nlogn" class="headerlink" title="O(logn)、O(nlogn)"></a>O(logn)、O(nlogn)</h3><p>对数阶时间复杂度是非常常见的算法时间复杂度。比如，归并排序、快速排序的时间复杂度都是 O(nlogn)。</p>
+<h3 id="O-m-n-、O-m-n"><a href="#O-m-n-、O-m-n" class="headerlink" title="O(m+n)、O(m*n)"></a>O(m+n)、O(m*n)</h3><p>假设 m 和 n 表示两个数据规模，且无法先评估量级大小，则不能忽略任意一个。对应的程序加法法则为 <code>T1(m) + T2(n) = O(f(m) + g(n))</code>，乘法法则为<code>T1(m)*T2(n) = O(f(m) * f(n))</code>。</p>
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><p>同一段代码，在不同输入的情况下，复杂度量级有可能是不一样的。因此，引入了几个时间复杂度的相关概念。其中包括：最好情况时间复杂度（best case time complexity）、最坏情况时间复杂度（worst case time complexity）、平均情况时间复杂度（average case time complexity）、均摊时间复杂度（amortized time complexity）。</p>
+<p>例子：模拟一个查找函数 find，遍历需要匹配的数组，若元素存在则返回，若不存在则返回 -1 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// n表示数组array的长度</span><br><span class="line">int find(int[] array, int n, int x) &#123;</span><br><span class="line">  int i = 0;</span><br><span class="line">  int pos = -1;</span><br><span class="line">  for (; i &lt; n; ++i) &#123;</span><br><span class="line">    if (array[i] == x) &#123;</span><br><span class="line">       pos = i;</span><br><span class="line">       break;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  return pos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="最好-最坏情况时间复杂度"><a href="#最好-最坏情况时间复杂度" class="headerlink" title="最好/最坏情况时间复杂度"></a>最好/最坏情况时间复杂度</h3><p>最好情况时间复杂度就是，在最理想的情况下，执行这段代码的时间复杂度。最坏情况时间复杂度就是，在最糟糕的情况下，执行这段代码的时间复杂度。</p>
+<p>如例子中，如果查找元素刚好在数组首位，则立即匹配到，最好时间复杂度是 <code>O(1)</code>；若元素不在数组中，则需要遍历整个数组，即最坏时间复杂度是 <code>O(n)</code>。</p>
+<h3 id="平均情况时间复杂度"><a href="#平均情况时间复杂度" class="headerlink" title="平均情况时间复杂度"></a>平均情况时间复杂度</h3><p>最好情况时间复杂度和最坏情况时间复杂度对应的都是极端情况下的代码复杂度，发生的概率其实并不大。为了更好地表示平均情况下的复杂度，需要引入概念：<strong>平均情况时间复杂度</strong>，简称平均时间复杂度。</p>
+<p>如例子中，假设要查找元素在数组中与不在数组中的概率均为 1/2，元素在数组中任意位置出现的概率均为 1/n。则要查找的数据出现在任意位置，就是 1/2n，不出现的概率为 1/2，所以加权平均和为<br><code>1*1/2n+2*1/2n+...+n*1/2n+n*1/2 = (3n+1)/4</code>，最终时间复杂度为 O(n)，即平均时间复杂度为 O(n)。</p>
+<h3 id="均摊时间复杂度"><a href="#均摊时间复杂度" class="headerlink" title="均摊时间复杂度"></a>均摊时间复杂度</h3><p>对一个数据结构进行一组连续操作中，大部分情况下时间复杂度都很低，只有个别情况下时间复杂度比较高，而且这些操作之间存在前后连贯的时序关系。此时，可以将这一组操作放在一块儿分析，看是否能将较高时间复杂度那次操作的耗时，平摊到其他那些时间复杂度比较低的操作上。而且，<strong>在能够应用均摊时间复杂度分析的场合，一般均摊时间复杂度就等于最好情况时间复杂度</strong>。</p>
+<p>例子：模拟一个元素插入数组函数insert，若数组满了，则将所有值相加合并到数组首位，否则往数组末端插入元素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// array表示一个长度为n的数组</span><br><span class="line">// 代码中的array.length就等于n</span><br><span class="line">int[] array = new int[n];</span><br><span class="line">int count = 0;</span><br><span class="line"></span><br><span class="line">void insert(int val) &#123;</span><br><span class="line">if (count == array.length) &#123;</span><br><span class="line">   int sum = 0;</span><br><span class="line">   for (int i = 0; i &lt; array.length; ++i) &#123;</span><br><span class="line">      sum = sum + array[i];</span><br><span class="line">   &#125;</span><br><span class="line">   array[0] = sum;</span><br><span class="line">   count = 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">array[count] = val;</span><br><span class="line">++count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，在数组未满的情况下，插入的时间复杂度为 O(1)，而数组满的情况下，插入的时间复杂度为 O(n)。由于所有情况出现的概率均为 1/(n+1)，则加权平均值为 <code>1*1/(n+1)+1*1/(n+1)+...+1*1/(n+1)+n*1/(n+1) = 2n/(n+1)*</code>，即平均时间复杂度为 O(1)。</p>
+<p>而摊还分析法的思路，就是：每一次 O(n) 的插入操作，都会跟着 n-1 次 O(1) 的插入操作，所以把耗时多的那次操作均摊到接下来的 n-1 次耗时少的操作上，均摊下来，这一组连续的操作的均摊时间复杂度就是 O(1)，得到的时间复杂度就是均摊时间复杂度。因此，<strong>均摊时间复杂度其实是特殊的平均时间复杂度</strong>。</p>
+<h1 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a>空间复杂度</h1><h2 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h2><p>空间复杂度全称是渐进空间复杂度（asymptotic space complexity），表示<strong>算法的存储空间与数据规模之间的增长关系</strong>。</p>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2020/04/15/【数据结构与算法一】复杂度分析/">http://eazon.xyz/2020/04/15/【数据结构与算法一】复杂度分析/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/算法/"># 算法</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/04/15/【数据结构与算法二】数组/">【数据结构与算法二】数组</a>
+            
+            
+            <a class="next" rel="next" href="/2020/03/31/算法与数据结构/">算法与数据结构&LeetCode</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
