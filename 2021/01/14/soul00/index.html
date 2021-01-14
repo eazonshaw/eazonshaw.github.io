@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>soul网关学习01 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#入门"><span class="toc-text">入门</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载soul源码"><span class="toc-text">下载soul源码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#启动-soul-admin"><span class="toc-text">启动 soul-admin</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#搭建网关"><span class="toc-text">搭建网关</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基础-HTTP-连接测试"><span class="toc-text">基础 HTTP 连接测试</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Link"><span class="toc-text">Link</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">soul网关学习01</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 14, 2021&nbsp;&nbsp;21:09:13</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/soul网关学习系列/">soul网关学习系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>最近参加了<a href="https://github.com/yu199195" target="_blank" rel="noopener">猫大人</a>组织的 soul 网关源码阅读，目的是阅读优质的开源项目，吸收精华，养成习惯。第一天先进行下简单的开箱操作~</p>
+<h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><ol>
+<li>搭建网关环境（github 一键三连 star，watch，fork）</li>
+<li>编译代码，运行soul-admin soul-bootstrap</li>
+</ol>
+<h1 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h1><h2 id="下载soul源码"><a href="#下载soul源码" class="headerlink" title="下载soul源码"></a>下载soul源码</h2><p><a href="https://github.com/dromara/soul" target="_blank" rel="noopener">https://github.com/dromara/soul</a></p>
+<h2 id="启动-soul-admin"><a href="#启动-soul-admin" class="headerlink" title="启动 soul-admin"></a>启动 soul-admin</h2><p>配置数据库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">datasource:</span><br><span class="line">    url: jdbc:mysql://localhost:3306/soul?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=Asia/Shanghai&amp;useSSL=false</span><br><span class="line">    username: root</span><br><span class="line">    password: root</span><br><span class="line">    driver-class-name: com.mysql.jdbc.Driver</span><br></pre></td></tr></table></figure>
+
+<p>在 IDEA 中启动 SoulAdminBootstrap，启动成功后访问：<a href="http://localhost:9095，账号密码为admin/123456。至此" target="_blank" rel="noopener">http://localhost:9095，账号密码为admin/123456。至此</a> soul-admin 管理控制台启动成功。</p>
+<p><img src="https://i.loli.net/2021/01/15/cWFYwkqzPd3BM62.png" alt="image.png"></p>
+<h2 id="搭建网关"><a href="#搭建网关" class="headerlink" title="搭建网关"></a>搭建网关</h2><p>使用 soul-bootstrap 作为网关，启动 SoulBootstrapApplication，端口为 9195。重点配置是控制台的连接：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">soul :</span><br><span class="line">    file:</span><br><span class="line">      enabled: true</span><br><span class="line">    corss:</span><br><span class="line">      enabled: true</span><br><span class="line">    dubbo :</span><br><span class="line">      parameter: multi</span><br><span class="line">    sync:</span><br><span class="line">        websocket :</span><br><span class="line">             urls: ws://localhost:9095/websocket</span><br></pre></td></tr></table></figure>
+
+<h2 id="基础-HTTP-连接测试"><a href="#基础-HTTP-连接测试" class="headerlink" title="基础 HTTP 连接测试"></a>基础 HTTP 连接测试</h2><p>使用 soul-examples 中的 soul-examples-http 作为样例，启动 SoulTestHttpApplication。重点配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">soul:</span><br><span class="line">  http:</span><br><span class="line">    adminUrl: http://localhost:9095</span><br><span class="line">    port: 8188</span><br><span class="line">    contextPath: /http</span><br><span class="line">    appName: http</span><br><span class="line">    full: false</span><br></pre></td></tr></table></figure>
+
+<p>在业务接口中添加 <code>@SoulSpringMvcClient</code> 注解，将 url 规则注册到网关，样例中添加了 <code>@SoulSpringMvcClient(path = &quot;/test/**&quot;)</code>，表示设置了<code>/test/**</code>的规则。</p>
+<p>启动工程后，刷新 admin 页面，发现规则自动添加到了 divide 的插件列表中。</p>
+<p><img src="https://i.loli.net/2021/01/15/Luxf3WkoycQSlTd.png" alt="image.png"></p>
+<p>http 转发测试，请求 <a href="http://localhost:9195/http/test/findByUserId?userId=1" target="_blank" rel="noopener">http://localhost:9195/http/test/findByUserId?userId=1</a> 。测试结果如下，说明可以成功通过网关访问到实际的服务。</p>
+<p><img src="https://i.loli.net/2021/01/15/kiUH5yTmQMaFxeb.png" alt="image.png"></p>
+<p>尝试关闭选择器规则，再次进行请求。结果为请求失败，未找到当前的规则。</p>
+<p><img src="https://i.loli.net/2021/01/15/uspo8YzGQWKdl7O.png" alt="image.png"></p>
+<p>尝试关闭 http 测试的服务，admin 错误日志记录，检查到 8188（http服务）挂了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ERROR 1148 --- [upstream-task-3] o.d.s.a.s.impl.UpstreamCheckService      : check the url=192.168.3.3:8188 is fail</span><br></pre></td></tr></table></figure>
+
+<p>此时再次请求，结果仍未失败，未找到当前的规则。</p>
+<h1 id="Link"><a href="#Link" class="headerlink" title="Link"></a>Link</h1><ul>
+<li>官网文档：<a href="https://dromara.org/zh-cn/docs/soul/induction.html" target="_blank" rel="noopener">https://dromara.org/zh-cn/docs/soul/induction.html</a></li>
+</ul>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2021/01/14/soul00/">http://eazon.xyz/2021/01/14/soul00/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        <a href="/tags/soul/"># soul</a>
+                    
+                        <a href="/tags/网关/"># 网关</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2020/04/24/【数据结构与算法七】排序算法/">【数据结构与算法七】排序算法</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>

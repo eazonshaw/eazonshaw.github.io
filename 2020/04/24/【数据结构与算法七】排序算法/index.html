@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>【数据结构与算法七】排序算法 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#分析"><span class="toc-text">分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#执行效率（时间复杂度）"><span class="toc-text">执行效率（时间复杂度）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#内存消耗（空间复杂度）"><span class="toc-text">内存消耗（空间复杂度）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#稳定性（元素顺序）"><span class="toc-text">稳定性（元素顺序）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#有序度和逆序度"><span class="toc-text">有序度和逆序度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基本操作"><span class="toc-text">基本操作</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#O-n-2-的排序算法"><span class="toc-text">O(n^2^)的排序算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#冒泡排序"><span class="toc-text">冒泡排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#描述"><span class="toc-text">描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码实现"><span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析-1"><span class="toc-text">分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#内存消耗和稳定性"><span class="toc-text">内存消耗和稳定性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#时间复杂度"><span class="toc-text">时间复杂度</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#插入排序"><span class="toc-text">插入排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#描述-1"><span class="toc-text">描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码实现-1"><span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析-2"><span class="toc-text">分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#选择排序"><span class="toc-text">选择排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#描述-2"><span class="toc-text">描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码实现-2"><span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析-3"><span class="toc-text">分析</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结"><span class="toc-text">小结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#O-nlogn-的排序算法"><span class="toc-text">O(nlogn) 的排序算法</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#归并排序"><span class="toc-text">归并排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#描述-3"><span class="toc-text">描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码实现-3"><span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析-4"><span class="toc-text">分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#稳定性"><span class="toc-text">稳定性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#时间复杂度-1"><span class="toc-text">时间复杂度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#空间复杂度"><span class="toc-text">空间复杂度</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快速排序"><span class="toc-text">快速排序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#描述-4"><span class="toc-text">描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#代码实现-4"><span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分析-5"><span class="toc-text">分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#稳定性-1"><span class="toc-text">稳定性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#空间复杂度-1"><span class="toc-text">空间复杂度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#时间复杂度-2"><span class="toc-text">时间复杂度</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小结-1"><span class="toc-text">小结</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#O-n-的排序算法"><span class="toc-text">O(n) 的排序算法</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【数据结构与算法七】排序算法</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">April 24, 2020&nbsp;&nbsp;01:44:08</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>排序算法很基础，也很重要。排序算法有很多种，最经典，最常用的有：冒泡排序、插入排序、选择排序、归并排序、快速排序、计数排序、基数排序、桶排序。</p>
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><blockquote>
+<p>如何分析一个排序算法？</p>
+</blockquote>
+<p>对于排序算法执行效率的分析，可以从执行效率、内存消耗和稳定性几个方面衡量。</p>
+<h2 id="执行效率（时间复杂度）"><a href="#执行效率（时间复杂度）" class="headerlink" title="执行效率（时间复杂度）"></a>执行效率（时间复杂度）</h2><ol>
+<li>最好情况、最坏情况、平均情况时间复杂度</li>
+<li>时间复杂度的系数、常数 、低阶</li>
+<li>比较次数和交换（或移动）次数</li>
+</ol>
+<h2 id="内存消耗（空间复杂度）"><a href="#内存消耗（空间复杂度）" class="headerlink" title="内存消耗（空间复杂度）"></a>内存消耗（空间复杂度）</h2><p>对排序算法的空间复杂度，注意概念，<strong>原地排序（Sorted in place）</strong>。原地排序算法，就是特指空间复杂度是 O(1) 的排序算法，即不需要另外的空间。</p>
+<h2 id="稳定性（元素顺序）"><a href="#稳定性（元素顺序）" class="headerlink" title="稳定性（元素顺序）"></a>稳定性（元素顺序）</h2><p>排序算法的稳定性，是指如果待排序的序列中存在值相等的元素，经过排序之后，相等元素之间原有的先后顺序不变。</p>
+<p>经过某种排序算法排序之后，如果相等元素的排序保持不变的话，就把这种排序算法叫作<strong>稳定的排序算法</strong>；如果前后顺序发生变化，那对应的排序算法就叫作<strong>不稳定的排序算法</strong>。</p>
+<p>比如，给定一组数据，<code>[5,2,3,4,3]</code>经过排序算法后为<code>[2,3,3,4,5]</code>，若数组中两个3的先后顺序保持不变，则为稳定的排序算法。</p>
+<h2 id="有序度和逆序度"><a href="#有序度和逆序度" class="headerlink" title="有序度和逆序度"></a>有序度和逆序度</h2><p><strong>默认从小到大为有序</strong>。</p>
+<p><strong>有序度</strong>是数组中具有有序关系的元素对的个数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">有序元素对：a[i] &lt;= a[j], 如果i &lt; j。</span><br></pre></td></tr></table></figure>
+
+<p><strong>逆序度</strong>是数组中具有逆序关系的元素对的个数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">逆序元素对：a[i] &gt; a[j], 如果i &lt; j。</span><br></pre></td></tr></table></figure>
+
+<p>完全有序的数组的有序度叫作<strong>满有序度</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">满有序度的计算：n*(n-1)/2，n为元素的个数</span><br></pre></td></tr></table></figure>
+
+<p>公式：<strong>逆序度 = 满有序度 - 有序度</strong>。排序的过程就是一种增加有序度，减少逆序度的过程，最后达到满有序度，就说明排序完成了。</p>
+<h2 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h2><p><strong>比较</strong>和<strong>移动</strong></p>
+<h1 id="O-n-2-的排序算法"><a href="#O-n-2-的排序算法" class="headerlink" title="O(n^2^)的排序算法"></a>O(n^2^)的排序算法</h1><h2 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h2><h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>冒泡排序只会操作相邻的两个数据。每次冒泡操作都会对相邻的两个元素进行比较，看是否满足大小关系要求。如果不满足就让它俩互换。一次冒泡会让至少一个元素移动到它应该在的位置，重复 n 次，就完成了 n 个数据的排序工作。</p>
+<h3 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&apos;&apos;&apos;冒泡算法&apos;&apos;&apos;</span><br><span class="line">def bubble_sort(a: List[int]):</span><br><span class="line">    length = len(a)</span><br><span class="line">    if length &lt;= 1:</span><br><span class="line">        return</span><br><span class="line">        </span><br><span class="line">    for i in range(length):</span><br><span class="line">        # 提前退出冒泡循环的标志位</span><br><span class="line">        made_swap = False</span><br><span class="line">        for j in range(length-i-1):</span><br><span class="line">            # 交换</span><br><span class="line">            if a[j] &gt; a[j+1]:</span><br><span class="line">                a[j], a[j + 1] = a[j + 1], a[j]</span><br><span class="line">                # 表示有数据交换</span><br><span class="line">                made_swap = True</span><br><span class="line">        if not made_swap:</span><br><span class="line">            break</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><h4 id="内存消耗和稳定性"><a href="#内存消耗和稳定性" class="headerlink" title="内存消耗和稳定性"></a>内存消耗和稳定性</h4><p>冒泡的过程只涉及相邻数据的交换操作，只需要常量级的临时空间，所以它的空间复杂度为 O(1)，是一个<strong>原地排序算法</strong>。</p>
+<p>在冒泡排序中，只有交换才可以改变两个元素的前后顺序。为了保证冒泡排序算法的稳定性，当有相邻的两个元素大小相等的时候，不做交换，相同大小的数据在排序前后不会改变顺序，所以冒泡排序是<strong>稳定的排序算法</strong>。</p>
+<h4 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h4><ul>
+<li><strong>最好时间复杂度</strong>：最好情况下，初始状态的有序度是 <code>n*(n-1)/2</code>，就不需要进行交换。时间复杂度为 <code>O(1)</code>。</li>
+<li><strong>最坏时间复杂度</strong>：最坏情况下，初始状态的有序度是 0，所以要进行 <code>n*(n-1)/2</code> 次交换。时间复杂度为 <code>O(n^2)</code>。</li>
+<li><strong>平均时间复杂度</strong>：可以取中间值 <code>n*(n-1)/4</code>，来表示初始有序度既不是很高也不是很低的平均情况。平均情况下，需要 n*(n-1)/4 次交换操作，比较操作肯定要比交换操作多，而复杂度的上限是 O(n^2)，所以平均情况下的时间复杂度就是 <code>O(n^2)</code>。</li>
+</ul>
+<h2 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h2><h3 id="描述-1"><a href="#描述-1" class="headerlink" title="描述"></a>描述</h3><p>将数组中的数据分为两个区间，<strong>已排序区间</strong>和<strong>未排序区间</strong>。初始已排序区间只有一个元素，就是数组的第一个元素。</p>
+<p>插入算法的核心思想是<strong>取未排序区间中的元素，在已排序区间中找到合适的插入位置将其插入，并保证已排序区间数据一直有序</strong>。重复这个过程，<strong>直到未排序区间中元素为空</strong>，算法结束。</p>
+<h3 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'''插入排序'''</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">insertion_sort</span><span class="params">(a: List[int])</span>:</span></span><br><span class="line">    length = len(a)</span><br><span class="line">    <span class="keyword">if</span> length &lt;= <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, length):</span><br><span class="line">        <span class="comment"># 这是提取的元素</span></span><br><span class="line">        value = a[i]</span><br><span class="line">        <span class="comment"># 从i-1到0遍历</span></span><br><span class="line">        j = i - <span class="number">1</span></span><br><span class="line">        <span class="comment"># 若比提取的元素大，则往右移动</span></span><br><span class="line">        <span class="keyword">while</span> j &gt;= <span class="number">0</span> <span class="keyword">and</span> a[j] &gt; value:</span><br><span class="line">            a[j + <span class="number">1</span>] = a[j]</span><br><span class="line">            j -= <span class="number">1</span></span><br><span class="line">        <span class="comment"># 否则插入提取的元素</span></span><br><span class="line">        a[j + <span class="number">1</span>] = value</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h3><p>插入排序算法的运行并不需要额外的存储空间，所以空间复杂度是 O(1)，也就是说，这是一个<strong>原地排序算法</strong>。</p>
+<p>在插入排序中，对于值相同的元素，可以选择将后面出现的元素，插入到前面出现元素的后面，这样就可以保持原有的前后顺序不变，所以插入排序是<strong>稳定的排序算法</strong>。</p>
+<p>对于插入排序来说，每次插入操作都相当于在数组中插入一个数据，循环执行 n 次插入操作，所以<strong>平均时间复杂度为 O(n^2)</strong>。</p>
+<h2 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h2><h3 id="描述-2"><a href="#描述-2" class="headerlink" title="描述"></a>描述</h3><p>将数组中的数据分为两个区间，<strong>已排序区间</strong>和<strong>未排序区间</strong>。初始已排序区间只有一个元素，就是数组的第一个元素。</p>
+<p>选择排序每次会从未排序区间中找到最小的元素，将其放到已排序区间的末尾。</p>
+<h3 id="代码实现-2"><a href="#代码实现-2" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">''' 选择排序 '''</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">selection_sort</span><span class="params">(a: List[int])</span>:</span></span><br><span class="line">    length = len(a)</span><br><span class="line">    <span class="keyword">if</span> length &lt;= <span class="number">1</span>:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> range(length):</span><br><span class="line">        <span class="comment"># 最小值索引</span></span><br><span class="line">        min_index = i</span><br><span class="line">        <span class="comment"># 最小值</span></span><br><span class="line">        min_val = a[i]</span><br><span class="line">        <span class="keyword">for</span> j <span class="keyword">in</span> range(i, length):</span><br><span class="line">            <span class="comment"># 更新最小值索引和最小值</span></span><br><span class="line">            <span class="keyword">if</span> a[j] &lt; min_val:</span><br><span class="line">                min_index = j</span><br><span class="line">                min_val = a[j]</span><br><span class="line">        <span class="comment"># 交换</span></span><br><span class="line">        a[i], a[min_index] = a[min_index], a[i]</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-3"><a href="#分析-3" class="headerlink" title="分析"></a>分析</h3><p>选择排序空间复杂度为 O(1)，是一种<strong>原地排序算法</strong>。</p>
+<p>选择排序的<strong>最好情况时间复杂度、最坏情况和平均情况时间复杂度都为 O(n^2)</strong>。</p>
+<p>选择排序是一种<strong>不稳定的排序算法</strong>。选择排序每次都要找剩余未排序元素中的最小值，并和前面的元素交换位置，这样破坏了稳定性。正是因此，相对于冒泡排序和插入排序，选择排序就稍微逊色了。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><blockquote>
+<p>为什么插入排序比冒泡排序更受欢迎？</p>
+</blockquote>
+<p>对比冒泡排序和插入排序，可以发现，在 Java 实现上，把执行一个赋值语句的时间粗略地计为单位时间（unit_time），然后分别用冒泡排序和插入排序对同一个逆序度是 K 的数组进行排序。用冒泡排序，需要 K 次交换操作，每次需要 3 个赋值语句，所以交换操作总耗时就是 3*K 单位时间。而插入排序中数据移动操作只需要 K 个单位时间。</p>
+<p>因此，虽然冒泡排序和插入排序在时间复杂度上是一样的，都是 O(n^2)，但是如果希望把性能优化做到极致，那应该<strong>首选插入排序</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">冒泡排序中数据的交换操作：</span><br><span class="line">if (a[j] &gt; a[j+1]) &#123; // 交换</span><br><span class="line">   int tmp = a[j];</span><br><span class="line">   a[j] = a[j+1];</span><br><span class="line">   a[j+1] = tmp;</span><br><span class="line">   flag = true;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">插入排序中数据的移动操作：</span><br><span class="line">if (a[j] &gt; value) &#123;</span><br><span class="line">  a[j+1] = a[j];  // 数据移动</span><br><span class="line">&#125; else &#123;</span><br><span class="line">  break;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>冒泡、插入、选择排序算法对比：</p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>原地？</th>
+<th>稳定？</th>
+<th>最好 最坏 平均</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>冒泡排序</td>
+<td>√</td>
+<td>√</td>
+<td>O(n) O(n^2^)  O(n^2^)</td>
+</tr>
+<tr>
+<td>插入排序</td>
+<td>√</td>
+<td>√</td>
+<td>O(n) O(n^2^)  O(n^2^)</td>
+</tr>
+<tr>
+<td>选择排序</td>
+<td>√</td>
+<td>×</td>
+<td>O(n^2^) O(n^2^)  O(n^2^)</td>
+</tr>
+</tbody></table>
+<h1 id="O-nlogn-的排序算法"><a href="#O-nlogn-的排序算法" class="headerlink" title="O(nlogn) 的排序算法"></a>O(nlogn) 的排序算法</h1><h2 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h2><h3 id="描述-3"><a href="#描述-3" class="headerlink" title="描述"></a>描述</h3><p>归并排序（Merge Sort）的思路是，如果要排序一个数组，先把数组从中间分成前后两部分，然后对前后两部分分别排序，再将排好序的两部分合并在一起，这样整个数组就都有序了。</p>
+<p>归并排序的核心是<strong>分治思想</strong>。分治，顾名思义，就是分而治之，将一个大问题分解成小的子问题来解决。小的子问题解决了，大问题也就解决了。</p>
+<p>递归就是计算数据规模不同、但求解思路相同的若干子问题，且具有终止条件的编程技巧。因此，可以用递归来解决归并排序的问题。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">递推公式：</span><br><span class="line">merge_sort(p…r) = merge(merge_sort(p…q), merge_sort(q+1…r))</span><br><span class="line"></span><br><span class="line">终止条件：</span><br><span class="line">p &gt;= r 不用再继续分解</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码实现-3"><a href="#代码实现-3" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">merge_sort</span><span class="params">(a: List[int])</span>:</span></span><br><span class="line">    _merge_sort_between(a, <span class="number">0</span>, len(a) - <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_merge_sort_between</span><span class="params">(a: List[int], low: int, high: int)</span>:</span></span><br><span class="line">    <span class="comment"># The indices are inclusive for both low and high.</span></span><br><span class="line">    <span class="keyword">if</span> low &lt; high:</span><br><span class="line">        mid = low + (high - low) // <span class="number">2</span></span><br><span class="line">        _merge_sort_between(a, low, mid)</span><br><span class="line">        _merge_sort_between(a, mid + <span class="number">1</span>, high)</span><br><span class="line">        _merge(a, low, mid, high)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_merge</span><span class="params">(a: List[int], low: int, mid: int, high: int)</span>:</span></span><br><span class="line">    <span class="comment"># a[low:mid], a[mid+1, high] are sorted.</span></span><br><span class="line">    i, j = low, mid + <span class="number">1</span></span><br><span class="line">    tmp = []</span><br><span class="line">    <span class="keyword">while</span> i &lt;= mid <span class="keyword">and</span> j &lt;= high:</span><br><span class="line">        <span class="keyword">if</span> a[i] &lt;= a[j]:</span><br><span class="line">            tmp.append(a[i])</span><br><span class="line">            i += <span class="number">1</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            tmp.append(a[j])</span><br><span class="line">            j += <span class="number">1</span></span><br><span class="line">    start = i <span class="keyword">if</span> i &lt;= mid <span class="keyword">else</span> j</span><br><span class="line">    end = mid <span class="keyword">if</span> i &lt;= mid <span class="keyword">else</span> high</span><br><span class="line">    tmp.extend(a[start:end + <span class="number">1</span>])</span><br><span class="line">    a[low:high + <span class="number">1</span>] = tmp</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-4"><a href="#分析-4" class="headerlink" title="分析"></a>分析</h3><h4 id="稳定性"><a href="#稳定性" class="headerlink" title="稳定性"></a>稳定性</h4><p>归并排序可以保证值相同的元素，在合并前后的先后顺序不变。因此，归并排序是一个<strong>稳定的排序算法</strong>。</p>
+<h4 id="时间复杂度-1"><a href="#时间复杂度-1" class="headerlink" title="时间复杂度"></a>时间复杂度</h4><p>假设对 n 个元素进行归并排序需要的时间是 <code>T(n)</code>，那分解成两个子数组排序的时间都是 <code>T(n/2)</code>，merge() 函数合并两个有序子数组的时间复杂度是 <code>O(n)</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T(1) = C； n=1时，只需要常量级的执行时间，所以表示为C。</span><br><span class="line">T(n) = 2*T(n/2) + n； n&gt;1</span><br></pre></td></tr></table></figure>
+
+<p>进一步推导，可以得到 T(n) = 2^k^ * T(n/2^k^)+kn。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">T(n) = 2*T(n/2) + n</span><br><span class="line">     = 2*(2*T(n/4) + n/2) + n = 4*T(n/4) + 2*n</span><br><span class="line">     = 4*(2*T(n/8) + n/4) + 2*n = 8*T(n/8) + 3*n</span><br><span class="line">     ......</span><br><span class="line">     = 2^k * T(n/2^k) + k * n</span><br><span class="line">     ......</span><br></pre></td></tr></table></figure>
+
+<p>当 T(n/2^k^) = T(1)，即 n/2^k^ = 1 时，k = log2n。将 k 值代入上述公式，可得 T(n) = Cn + nlog2n。因此，归并排序的时间复杂度为 O(nlogn)。</p>
+<h4 id="空间复杂度"><a href="#空间复杂度" class="headerlink" title="空间复杂度"></a>空间复杂度</h4><p>归并排序的合并函数，在合并两个有序数组为一个有序数组时，需要借助额外的存储空间。因此，归并排序<strong>不是一个原地排序算法</strong>。</p>
+<p>尽管每次合并操作都需要申请额外的内存空间，但在合并完成之后，临时开辟的内存空间就被释放掉了。在任意时刻，CPU 只会有一个函数在执行，也就只会有一个临时的内存空间在使用。临时内存空间最大也不会超过 n 个数据的大小，所以空间复杂度是 <code>O(n)</code>。</p>
+<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><h3 id="描述-4"><a href="#描述-4" class="headerlink" title="描述"></a>描述</h3><p>快速排序算法（Quicksort），简称快排。</p>
+<p>快排的核心思想是<strong>分治</strong>和<strong>分区</strong>。</p>
+<p>思路：假设要排序数组中下标从 p 到 r 之间的一组数据。</p>
+<ol>
+<li>选择 p 到 r 之间的任意一个数据作为 <strong>pivot（分区点）</strong>。</li>
+<li>遍历 p 到 r 之间的数据，将小于 pivot 的放到左边，将大于 pivot 的放到右边，将 pivot 放到中间。</li>
+<li>此时，数组分为三段，p:q-1、q、q+1:r，分别小于、等于和大于 pivot。</li>
+<li>用递归排序下标从 p 到 q-1 之间的数据和下标从 q+1 到 r 之间的数据，直到区间缩小为 1。此时，数组有序。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">递推公式：</span><br><span class="line">quick_sort(p…r) = quick_sort(p…q-1) + quick_sort(q+1… r)</span><br><span class="line"></span><br><span class="line">终止条件：</span><br><span class="line">p &gt;= r</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码实现-4"><a href="#代码实现-4" class="headerlink" title="代码实现"></a>代码实现</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">def quick_sort(a: List[int]):</span><br><span class="line">    _quick_sort_between(a, 0, len(a) - 1)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def _quick_sort_between(a: List[int], low: int, high: int):</span><br><span class="line">    if low &lt; high:</span><br><span class="line">        # get a random position as the pivot</span><br><span class="line">        k = random.randint(low, high)</span><br><span class="line">        a[low], a[k] = a[k], a[low]</span><br><span class="line"></span><br><span class="line">        m = _partition(a, low, high)  # a[m] is in final position</span><br><span class="line">        _quick_sort_between(a, low, m - 1)</span><br><span class="line">        _quick_sort_between(a, m + 1, high)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def _partition(a: List[int], low: int, high: int):</span><br><span class="line">    pivot, j = a[low], low</span><br><span class="line">    for i in range(low + 1, high + 1):</span><br><span class="line">        if a[i] &lt;= pivot:</span><br><span class="line">            j += 1</span><br><span class="line">            a[j], a[i] = a[i], a[j]  # swap</span><br><span class="line">    a[low], a[j] = a[j], a[low]</span><br><span class="line">    return j</span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-5"><a href="#分析-5" class="headerlink" title="分析"></a>分析</h3><h4 id="稳定性-1"><a href="#稳定性-1" class="headerlink" title="稳定性"></a>稳定性</h4><p>因为分区的过程涉及交换操作，如果数组中有两个相同的元素，在经过分区操作之后，元素的相对先后顺序可能会改变，因此，<strong>快排不是一个稳定的排序算法</strong>。</p>
+<h4 id="空间复杂度-1"><a href="#空间复杂度-1" class="headerlink" title="空间复杂度"></a>空间复杂度</h4><p>快排的 partition 函数，利用了元素之间的交换，不需要占用额外的内存空间，所以快排的空间复杂度为 <code>O(1)</code>，因此，<strong>快排是原地排序算法</strong>。</p>
+<h4 id="时间复杂度-2"><a href="#时间复杂度-2" class="headerlink" title="时间复杂度"></a>时间复杂度</h4><p>快排的时间复杂度与归并排序类似，是 <code>O(nlogn)</code>。但是，如果<strong>数组中的元素已经是有序</strong>的了，且<strong>每次都选择最后一个元素作为 pivot</strong>，那每次分区得到的两个区间都是极不均等的。需要进行大约 n 次分区操作，才能完成快排的整个过程。每次分区平均要扫描大约 n/2 个元素，这种情况下，<strong>快排的时间复杂度就从 O(nlogn) 退化成了 O(n2)</strong>。</p>
+<h2 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h2><p>归并排序的处理过程是<strong>由下到上</strong>的，先处理子问题，然后再合并。而快排正好相反，它的处理过程是<strong>由上到下</strong>的，先分区，然后再处理子问题。</p>
+<p>理解归并排序的重点是理解递推公式和 merge() 合并函数。同理，理解快排的重点也是理解递推公式，还有 partition() 分区函数。</p>
+<p>归并排序算法是一种在任何情况下时间复杂度都比较稳定的排序算法，但是归并排序不是原地排序算法，空间复杂度比较高，是 O(n)，因此，<strong>归并排序没有快排应用广泛</strong>。</p>
+<p>快排虽然最坏的时间复杂度为O(n^2)，但其时间复杂度退化到 O(n^2) 的概率非常小，而且可以通过<strong>合理地选择 pivot</strong> 来避免这种情况。</p>
+<p>归并、快速排序算法对比：</p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>原地？</th>
+<th>稳定？</th>
+<th>最好 最坏 平均</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>归并排序</td>
+<td>×</td>
+<td>√</td>
+<td>O(nlogn) O(nlogn) O(nlogn)</td>
+</tr>
+<tr>
+<td>快速排序</td>
+<td>√</td>
+<td>×</td>
+<td>O(nlogn) <strong>O(n^2)</strong>  O(nlogn)</td>
+</tr>
+</tbody></table>
+<h1 id="O-n-的排序算法"><a href="#O-n-的排序算法" class="headerlink" title="O(n) 的排序算法"></a>O(n) 的排序算法</h1>
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2020/04/24/【数据结构与算法七】排序算法/">http://eazon.xyz/2020/04/24/【数据结构与算法七】排序算法/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2021/01/14/soul00/">soul网关学习01</a>
+            
+            
+            <a class="next" rel="next" href="/2020/04/15/【JAVA业务需要注意的点】日志问题/">【JAVA业务需要注意的点】日志问题</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
