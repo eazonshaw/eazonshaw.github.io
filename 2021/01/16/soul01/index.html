@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>soul网关学习02 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#思考"><span class="toc-text">思考</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#关联-soul-的包"><span class="toc-text">关联 soul 的包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#服务注册"><span class="toc-text">服务注册</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#HTTP-代理的实现"><span class="toc-text">HTTP 代理的实现</span></a></li></ol></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">soul网关学习02</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 16, 2021&nbsp;&nbsp;02:30:44</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/soul网关学习系列/">soul网关学习系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><ol>
+<li><del>运行examples下面的 http服务</del></li>
+<li><del>学习文档，结合divde插件，发起http请求soul网关，体验http代理</del></li>
+<li>昨天已经体验了 http 代理的转发，今天来探索下 http 代理中的一些原理。</li>
+</ol>
+<h1 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h1><h2 id="关联-soul-的包"><a href="#关联-soul-的包" class="headerlink" title="关联 soul 的包"></a>关联 soul 的包</h2><ul>
+<li>soul-spring-boot-starter-client-springmvc</li>
+<li>soul-client-springmvc</li>
+</ul>
+<h2 id="服务注册"><a href="#服务注册" class="headerlink" title="服务注册"></a>服务注册</h2><p>昨天已经发现 @SoulSpringMvcClient 可以定义规则，然后将规则注册到网关的选择器中。另外，通过配置文件中的配置项 soul.http 可以定义选择器的名称，而配置是通过  <code>SoulSpringMvcClientConfiguration</code> 进行装载。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">soul:</span><br><span class="line">  http:</span><br><span class="line">    adminUrl: http://localhost:9095</span><br><span class="line">    port: 8188</span><br><span class="line">    contextPath: /http</span><br><span class="line">    appName: http</span><br><span class="line">    full: false</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span></span><br><span class="line"><span class="meta">@ConfigurationProperties</span>(prefix = <span class="string">"soul.http"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> SoulSpringMvcConfig <span class="title">soulHttpConfig</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> SoulSpringMvcConfig();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>大概知道了选择器的装载过程，我们来看看选择器是如何加载到 admin 控制台的。从 <code>SoulSpringMvcClientConfiguration</code> 可以看到，加载了 bean <code>SpringMvcClientBeanPostProcessor</code>。而这个类就是在 spring 加载 bean 之前进行预处理。</p>
+<p>大致的逻辑就是：</p>
+<ol>
+<li>在 spring 加载 bean 之前，先找所有 controller、restController、requestMapping 注解的 bean 。</li>
+<li>在类上找是否有注解 @SoulSpringMvcClient，如果有，则查找是否含有 * ，将其注册到控制台。</li>
+<li>在方法上找是否有注解 @SoulSpringMvcClient，如果有，则注册到控制台。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1</span></span><br><span class="line">Controller controller = AnnotationUtils.findAnnotation(bean.getClass(), Controller.class);</span><br><span class="line">RestController restController = AnnotationUtils.findAnnotation(bean.getClass(), RestController.class);</span><br><span class="line">RequestMapping requestMapping = AnnotationUtils.findAnnotation(bean.getClass(), RequestMapping.class);</span><br><span class="line">...</span><br><span class="line"><span class="comment">//2</span></span><br><span class="line">SoulSpringMvcClient clazzAnnotation = AnnotationUtils.findAnnotation(bean.getClass(), SoulSpringMvcClient.class);</span><br><span class="line">String prePath = <span class="string">""</span>;</span><br><span class="line"><span class="keyword">if</span> (Objects.nonNull(clazzAnnotation)) &#123;</span><br><span class="line">    <span class="keyword">if</span> (clazzAnnotation.path().indexOf(<span class="string">"*"</span>) &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        String finalPrePath = prePath;</span><br><span class="line">        executorService.execute(() -&gt; RegisterUtils.doRegister(buildJsonParams(clazzAnnotation, finalPrePath), url,</span><br><span class="line">                RpcTypeEnum.HTTP));</span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//3</span></span><br><span class="line"><span class="keyword">final</span> Method[] methods = ReflectionUtils.getUniqueDeclaredMethods(bean.getClass());</span><br><span class="line"><span class="keyword">for</span> (Method method : methods) &#123;</span><br><span class="line">    SoulSpringMvcClient soulSpringMvcClient = AnnotationUtils.findAnnotation(method, SoulSpringMvcClient.class);</span><br><span class="line">    <span class="keyword">if</span> (Objects.nonNull(soulSpringMvcClient)) &#123;</span><br><span class="line">        ...<span class="comment">//注册</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接下来，就是关键的工具类 RegisterUtils 的注册如何实现了，可以看到其就是利用 OkHttpTools 发送了 http 请求，重点在 url 和 json。 可以看到， url 由 adminUrl + “/soul-client/springmvc-register” 拼接而成，而 json 其实就是将 soul.http 的参数进行序列化。这里的重点是 <code>/springmvc-register</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public static void doRegister(final String json, final String url, final RpcTypeEnum rpcTypeEnum) &#123;</span><br><span class="line">    String result = OkHttpTools.getInstance().post(url, json);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>同时，我们可以关注 <code>ContextRegisterListener</code> 监听类，其实在<code>SoulSpringMvcClientConfiguration</code>中同样有加载，监听的逻辑和<code>SpringMvcClientBeanPostProcessor</code>类似。</p>
+<p>回到 <code>/springmvc-register</code> 这个path，其实就是一个简单的http连接，调用admin的接口。而这个接口的逻辑，就是数据库保存功能。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@PostMapping(&quot;/springmvc-register&quot;)</span><br><span class="line">public String registerSpringMvc(@RequestBody final SpringMvcRegisterDTO springMvcRegisterDTO) &#123;</span><br><span class="line">    return soulClientRegisterService.registerSpringMvc(springMvcRegisterDTO);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，可以关注一下 admin 的表结构设计（这里只是一个搬运工），可以看到，selector 中应该就是存放我们定义的选择器，而 rule 中就是存放我们注册的规则。</p>
+<p><img src="https://i.loli.net/2021/01/16/WCtDXUziea1APIg.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/01/16/uYNi32rH7GavOK1.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/01/16/B6mxSLFwqrcZR1X.png" alt="image.png"></p>
+<p>至此，http 的注册逻辑就大致完成了。</p>
+<h2 id="HTTP-代理的实现"><a href="#HTTP-代理的实现" class="headerlink" title="HTTP 代理的实现"></a>HTTP 代理的实现</h2><p>http 服务注册到了控制台，之后是怎么通过网关进行转发的呢？</p>
+<p>后续可以通过网关入手，观察路由是如何进行跳转的。</p>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2021/01/16/soul01/">http://eazon.xyz/2021/01/16/soul01/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        <a href="/tags/soul/"># soul</a>
+                    
+                        <a href="/tags/网关/"># 网关</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2021/01/14/soul00/">soul网关学习01</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
