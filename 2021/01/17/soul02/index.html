@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>soul网关学习03 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#玩玩"><span class="toc-text">玩玩</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#dubbo-插件初体验"><span class="toc-text">dubbo 插件初体验</span></a></li></ol></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">soul网关学习03</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 17, 2021&nbsp;&nbsp;00:14:36</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/soul网关学习系列/">soul网关学习系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><ol>
+<li>运行examples下面的 apache-dubbo服务</li>
+<li>学习文档，结合dubbo插件，发起http请求soul网关，体验dubbo代理</li>
+</ol>
+<h1 id="玩玩"><a href="#玩玩" class="headerlink" title="玩玩"></a>玩玩</h1><h2 id="dubbo-插件初体验"><a href="#dubbo-插件初体验" class="headerlink" title="dubbo 插件初体验"></a>dubbo 插件初体验</h2><ol>
+<li>启动 soul-examples-alibaba-dubbo-service 工程，启动成功后，可以看到使用 <code>@SoulDubboClient</code> 注解的服务已经注册到了网关中，同时在控制台中也看到了注册成功的日志：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dubbo client register success</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/16/P5dSR2FIxHs83b7.png" alt="image.png"></p>
+<ol start="2">
+<li>但是，在网关中却抛出了异常，看异常信息大致是网关缺少对 dubbo 的配置。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">2021-01-16 22:55:47.423 ERROR 4416 --- [ctReadThread-45] org.java_websocket.drafts.Draft_6455     : Runtime exception during onWebsocketMessage</span><br><span class="line"></span><br><span class="line">java.lang.IllegalStateException: No such application config! Please add &lt;dubbo:application name=&quot;...&quot; /&gt; to your spring config.</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>排查发现。。其实是网关对 dubbo 插件的支持没有开启，开启 dubbo 插件后，重启 soul-examples-alibaba-dubbo-service 工程，可以在网关中看到 dubbo 服务成功注册的信息。</li>
+</ol>
+<p><img src="https://i.loli.net/2021/01/16/iqTgcCZ9vPswuUF.png" alt="image.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">init aliaba dubbo reference success there meteData is ...</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>现在，发送请求 <code>http://localhost:9195/dubbo/findAll</code> ，发现报了空指针异常，在构建参数的时候读取到了空的参数，猜测是请求没有把之前请求的参数去掉导致。<strong>如果这样的话，是不是就意味着可以定义同个规则名称，但是不同参数的两个规则？</strong>去掉参数后，再次请求，发现请求成功。默认的参数处理类是：<code>DubboMultiParameterResolveServiceImpl</code>。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">java.lang.NullPointerException: null</span><br><span class="line">	at org.dromara.soul.web.dubbo.DubboMultiParameterResolveServiceImpl.buildParameter(DubboMultiParameterResolveServiceImpl.java:42)</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/16/ZQSc6r1bVkwWAaj.png" alt="image.png"></p>
+<ol start="5">
+<li>尝试发送其他请求：</li>
+</ol>
+<ul>
+<li>insert : {“id”:”1234”,”name”:”eazonshaw”}</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;code&quot;:200,&quot;message&quot;:&quot;Access to success!&quot;,&quot;data&quot;:&#123;&quot;name&quot;:&quot;hello world Soul Alibaba Dubbo: eazonshaw&quot;,&quot;id&quot;:&quot;1234&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>findByIdsAndName：{ids:[1,2,3],name:eazonshaw}</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;code&quot;:200,&quot;message&quot;:&quot;Access to success!&quot;,&quot;data&quot;:&#123;&quot;name&quot;:&quot;hello world soul alibaba dubbo param findByIdsAndName : eazonshaw&quot;,&quot;id&quot;:&quot;[1, 2, 3]&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>findByIdsAndName：{ids:[“1”,”2”,”3”],name:”eazonshaw”}</li>
+</ul>
+<p>这里发现，当入参类型为数组的基本类型时，如果入参的 json 为 <code>{ids:[1,2,3],name:eazonshaw}</code> 时，会报异常，猜测是因为没有指定数组内参数的类型导致，因此将入参的 json 改成 <code>{ids:[&quot;1&quot;,&quot;2&quot;,&quot;3&quot;],name:&quot;eazonshaw&quot;}</code>。不过具体可以看<code>DubboMultiParameterResolveServiceImpl</code>的源码。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;code&quot;:200,&quot;message&quot;:&quot;Access to success!&quot;,&quot;data&quot;:&#123;&quot;name&quot;:&quot;hello world soul alibaba dubbo param findByArrayIdsAndName : eazonshaw&quot;,&quot;id&quot;:&quot;[1, 2, 3]&quot;&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2021/01/17/soul02/">http://eazon.xyz/2021/01/17/soul02/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        <a href="/tags/soul/"># soul</a>
+                    
+                        <a href="/tags/网关/"># 网关</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2021/01/16/soul01/">soul网关学习02</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
