@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>soul网关学习04 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#sofa-插件初体验"><span class="toc-text">sofa 插件初体验</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#soul-admin-amp-soul-bootstrap"><span class="toc-text">soul-admin &amp; soul-bootstrap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#soul-examples-sofa"><span class="toc-text">soul-examples-sofa</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#响应式编程"><span class="toc-text">响应式编程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#divide-插件原理"><span class="toc-text">divide 插件原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述"><span class="toc-text">概述</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Link"><span class="toc-text">Link</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">soul网关学习04</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 19, 2021&nbsp;&nbsp;01:26:08</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/soul网关学习系列/">soul网关学习系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><ol>
+<li>运行examples下面的 sofa-rpc服务</li>
+<li>学习文档，结合sofa插件，发起http请求soul网关，体验sofa代理</li>
+<li>遗留任务：网关中 http divide 插件原理的实现，前置知识点：响应式编程，webflux。</li>
+</ol>
+<h1 id="sofa-插件初体验"><a href="#sofa-插件初体验" class="headerlink" title="sofa 插件初体验"></a>sofa 插件初体验</h1><h2 id="soul-admin-amp-soul-bootstrap"><a href="#soul-admin-amp-soul-bootstrap" class="headerlink" title="soul-admin &amp; soul-bootstrap"></a>soul-admin &amp; soul-bootstrap</h2><p>soul-admin 打开对 sofa 插件的支持，soul-bootstrap 中引入对 sofa 插件的支持，重启网关。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">   &lt;groupId&gt;com.alipay.sofa&lt;/groupId&gt;</span><br><span class="line">   &lt;artifactId&gt;sofa-rpc-all&lt;/artifactId&gt;</span><br><span class="line">   &lt;version&gt;5.7.6&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">   &lt;groupId&gt;org.apache.curator&lt;/groupId&gt;</span><br><span class="line">   &lt;artifactId&gt;curator-client&lt;/artifactId&gt;</span><br><span class="line">   &lt;version&gt;4.0.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">   &lt;groupId&gt;org.apache.curator&lt;/groupId&gt;</span><br><span class="line">   &lt;artifactId&gt;curator-framework&lt;/artifactId&gt;</span><br><span class="line">   &lt;version&gt;4.0.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">   &lt;groupId&gt;org.apache.curator&lt;/groupId&gt;</span><br><span class="line">   &lt;artifactId&gt;curator-recipes&lt;/artifactId&gt;</span><br><span class="line">   &lt;version&gt;4.0.1&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">   &lt;groupId&gt;org.dromara&lt;/groupId&gt;</span><br><span class="line">   &lt;artifactId&gt;soul-spring-boot-starter-plugin-sofa&lt;/artifactId&gt;</span><br><span class="line">   &lt;version&gt;$&#123;project.version&#125;&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="soul-examples-sofa"><a href="#soul-examples-sofa" class="headerlink" title="soul-examples-sofa"></a>soul-examples-sofa</h2><p>启动 examples 下的 soul-examples-sofa 示例。请求 <code>/sofa/findAll</code>，成功，结果如下。</p>
+<p><img src="https://i.loli.net/2021/01/18/kwHcqEe1GKzQ3ms.png" alt="image.png"></p>
+<h1 id="响应式编程"><a href="#响应式编程" class="headerlink" title="响应式编程"></a>响应式编程</h1><p><a href="https://spring.io/guides/gs/reactive-rest-service/" target="_blank" rel="noopener">https://spring.io/guides/gs/reactive-rest-service/</a></p>
+<h1 id="divide-插件原理"><a href="#divide-插件原理" class="headerlink" title="divide 插件原理"></a>divide 插件原理</h1><blockquote>
+<p>遗留问题：网关是如何通过 divide 插件进行 http 的代理的？</p>
+</blockquote>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>由于对响应式编程webflux还不够熟，更多是通过猜测。</p>
+<p>整体实现流程：（责任链模式）</p>
+<ul>
+<li>请求链：DividePlugin doExecute -&gt; AbstractSoulPlugin（SoulPlugin） execute -&gt; DefaultSoulPluginChain（SoulPluginChain） execute -&gt; WebClientPlugin（SoulPlugin） execute。</li>
+</ul>
+<p>插件的抽象类 AbstractSoulPlugin 使用了模板方法模式，自定义插件 DividePlugin 继承了抽象类，重点实现 doExecute 方法。DividePlugin 的功能是处理路由到网关的请求。</p>
+<p>DividePlugin：</p>
+<ol>
+<li>读取规则。</li>
+<li>从 UpstreamCacheManager 中读取 DivideUpstream 的列表。</li>
+<li>使用工具 LoadBalanceUtils 决定 DivideUpstream 的负载均衡策略。</li>
+<li>构造 ServerWebExchange。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">protected Mono&lt;Void&gt; doExecute(final ServerWebExchange exchange, final SoulPluginChain chain, final SelectorData selector, final RuleData rule) &#123;</span><br><span class="line">   ...</span><br><span class="line">   final DivideRuleHandle ruleHandle = GsonUtils.getInstance().fromJson(rule.getHandle(), DivideRuleHandle.class);</span><br><span class="line">   final List&lt;DivideUpstream&gt; upstreamList = UpstreamCacheManager.getInstance().findUpstreamListBySelectorId(selector.getId());</span><br><span class="line">   ...</span><br><span class="line">   DivideUpstream divideUpstream = LoadBalanceUtils.selector(upstreamList, ruleHandle.getLoadBalance(), ip);</span><br><span class="line">   ...</span><br><span class="line">   // set the http url</span><br><span class="line">   String domain = buildDomain(divideUpstream);</span><br><span class="line">   String realURL = buildRealURL(domain, soulContext, exchange);</span><br><span class="line">   exchange.getAttributes().put(Constants.HTTP_URL, realURL);</span><br><span class="line">   // set the http timeout</span><br><span class="line">   exchange.getAttributes().put(Constants.HTTP_TIME_OUT, ruleHandle.getTimeout());</span><br><span class="line">   exchange.getAttributes().put(Constants.HTTP_RETRY, ruleHandle.getRetry());</span><br><span class="line">   return chain.execute(exchange);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>DefaultSoulPluginChain：责任链处理所有的 exchange。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public Mono&lt;Void&gt; execute(final ServerWebExchange exchange) &#123;</span><br><span class="line">    return Mono.defer(() -&gt; &#123;</span><br><span class="line">        if (this.index &lt; plugins.size()) &#123;</span><br><span class="line">            SoulPlugin plugin = plugins.get(this.index++);</span><br><span class="line">            Boolean skip = plugin.skip(exchange);</span><br><span class="line">            if (skip) &#123;</span><br><span class="line">                return this.execute(exchange);</span><br><span class="line">            &#125;</span><br><span class="line">            return plugin.execute(exchange, this);</span><br><span class="line">        &#125;</span><br><span class="line">        return Mono.empty();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>WebClientPlugin：使用 webClient 发送请求。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public Mono&lt;Void&gt; execute(final ServerWebExchange exchange, final SoulPluginChain chain) &#123;</span><br><span class="line">    ...</span><br><span class="line">    String urlPath = exchange.getAttribute(Constants.HTTP_URL);</span><br><span class="line">    ...</span><br><span class="line">    log.info(&quot;The request urlPath is &#123;&#125;, retryTimes is &#123;&#125;&quot;, urlPath, retryTimes);</span><br><span class="line">    HttpMethod method = HttpMethod.valueOf(exchange.getRequest().getMethodValue());</span><br><span class="line">    WebClient.RequestBodySpec requestBodySpec = webClient.method(method).uri(urlPath);</span><br><span class="line">    return handleRequestBody(requestBodySpec, exchange, timeout, retryTimes, chain);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Link"><a href="#Link" class="headerlink" title="Link"></a>Link</h1><ul>
+<li>sofa 官网入门指南：<a href="https://www.sofastack.tech/guides/sofastack-quick-start/" target="_blank" rel="noopener">https://www.sofastack.tech/guides/sofastack-quick-start/</a></li>
+</ul>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2021/01/19/soul03/">http://eazon.xyz/2021/01/19/soul03/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        <a href="/tags/soul/"># soul</a>
+                    
+                        <a href="/tags/网关/"># 网关</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2021/01/17/soul02/">soul网关学习03</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
