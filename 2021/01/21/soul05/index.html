@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>soul网关学习06 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#websocket-同步"><span class="toc-text">websocket 同步</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#同步策略"><span class="toc-text">同步策略</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Link"><span class="toc-text">Link</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">soul网关学习06</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 21, 2021&nbsp;&nbsp;01:26:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/soul网关学习系列/">soul网关学习系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><ol>
+<li>启动admin，与网关。 admin操作，使用websocket同步数据到网关</li>
+</ol>
+<h1 id="websocket-同步"><a href="#websocket-同步" class="headerlink" title="websocket 同步"></a>websocket 同步</h1><p>打开 websocket 同步策略，启动 soul-admin。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">soul:</span><br><span class="line">  sync:</span><br><span class="line">    websocket:</span><br><span class="line">      enabled: true</span><br></pre></td></tr></table></figure>
+
+<p>配置 websocket 的地址，启动网关。可以看到 websocket 同步策略配置成功：<code>you use websocket sync soul data.......</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">soul:</span><br><span class="line">  sync:</span><br><span class="line">    websocket :</span><br><span class="line">      urls: ws://localhost:9095/websocket</span><br></pre></td></tr></table></figure>
+
+<p>首先，soul使用 java-websocket 这个第三方库来进行websocket连接。重点可以看一下 <code>soul-sync-data-websocket</code> 工程，其中引入了 java-websocket 的库。主要是通过 WebsocketCollector ，对远程连接进行监控。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.java-websocket&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;Java-WebSocket&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;$&#123;java-websocket.version&#125;&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@OnOpen</span><br><span class="line">public void onOpen(final Session session) &#123;</span><br><span class="line">    log.info(&quot;websocket on open successful....&quot;);</span><br><span class="line">    SESSION_SET.add(session);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，如果 admin 服务停了，网关服务将会输出 <code>websocket reconnection is error</code> 异常日志，每隔 30 秒检查一次；此时重启 admin 服务，网关服务将会输出<code>websocket reconnect is successful</code>，重连成功。其中，主要逻辑集中在 <code>WebsocketSyncDataService</code> 。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">public WebsocketSyncDataService(final WebsocketConfig websocketConfig,</span><br><span class="line">                                    final PluginDataSubscriber pluginDataSubscriber,</span><br><span class="line">                                    final List&lt;MetaDataSubscriber&gt; metaDataSubscribers,</span><br><span class="line">                                    final List&lt;AuthDataSubscriber&gt; authDataSubscribers) &#123;</span><br><span class="line">    ...</span><br><span class="line">    try &#123;</span><br><span class="line">        for (WebSocketClient client : clients) &#123;</span><br><span class="line">            boolean success = client.connectBlocking(3000, TimeUnit.MILLISECONDS);</span><br><span class="line">            if (success) &#123;</span><br><span class="line">                log.info(&quot;websocket connection is successful.....&quot;);</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                log.error(&quot;websocket connection is error.....&quot;);</span><br><span class="line">            &#125;</span><br><span class="line">            executor.scheduleAtFixedRate(() -&gt; &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    if (client.isClosed()) &#123;</span><br><span class="line">                        boolean reconnectSuccess = client.reconnectBlocking();</span><br><span class="line">                        if (reconnectSuccess) &#123;</span><br><span class="line">                            log.info(&quot;websocket reconnect is successful.....&quot;);</span><br><span class="line">                        &#125; else &#123;</span><br><span class="line">                            log.error(&quot;websocket reconnection is error.....&quot;);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                    log.error(&quot;websocket connect is error :&#123;&#125;&quot;, e.getMessage());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;, 10, 30, TimeUnit.SECONDS);</span><br><span class="line">        &#125;</span><br><span class="line">        /* client.setProxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(&quot;proxyaddress&quot;, 80)));*/</span><br><span class="line">    &#125; catch (InterruptedException e) &#123;</span><br><span class="line">        log.info(&quot;websocket connection...exception....&quot;, e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="同步策略"><a href="#同步策略" class="headerlink" title="同步策略"></a>同步策略</h1><p>如下图所示，soul-admin 在用户发生配置变更之后，会通过 EventPublisher 发出配置变更通知，由 EventDispatcher 处理该变更通知，然后根据配置的同步策略(http、weboscket、zookeeper)，将配置发送给对应的事件处理器</p>
+<ul>
+<li>如果是 websocket 同步策略，则将变更后的数据主动推送给 soul-web，并且在网关层，会有对应的 WebsocketCacheHandler 处理器处理来处 admin 的数据推送</li>
+<li>如果是 zookeeper 同步策略，将变更数据更新到 zookeeper，而 ZookeeperSyncCache 会监听到 zookeeper 的数据变更，并予以处理</li>
+<li>如果是 http 同步策略，soul-web 主动发起长轮询请求，默认有 90s 超时时间，如果 soul-admin 没有数据变更，则会阻塞 http 请求，如果有数据发生变更则响应变更的数据信息，如果超过 60s 仍然没有数据变更则响应空数据，网关层接到响应后，继续发起 http 请求，反复同样的请求</li>
+</ul>
+<p><img src="https://bestkobe.gitee.io/images/soul/config-strage-processor.png?_t=201908032339" alt></p>
+<h1 id="Link"><a href="#Link" class="headerlink" title="Link"></a>Link</h1><ul>
+<li>java-websocket git 地址：<a href="https://github.com/TooTallNate/Java-WebSocket" target="_blank" rel="noopener">https://github.com/TooTallNate/Java-WebSocket</a></li>
+<li>soul 数据同步原理：<a href="https://dromara.org/zh-cn/docs/soul/dataSync.html" target="_blank" rel="noopener">https://dromara.org/zh-cn/docs/soul/dataSync.html</a></li>
+<li>soul 数据同步策略：<a href="https://dromara.org/zh-cn/docs/soul/user-dataSync.html" target="_blank" rel="noopener">https://dromara.org/zh-cn/docs/soul/user-dataSync.html</a></li>
+</ul>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2021/01/21/soul05/">http://eazon.xyz/2021/01/21/soul05/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        <a href="/tags/soul/"># soul</a>
+                    
+                        <a href="/tags/网关/"># 网关</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2021/01/20/soul04/">soul网关学习05</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
