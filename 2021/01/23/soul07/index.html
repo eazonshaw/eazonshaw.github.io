@@ -9,7 +9,7 @@
 
 
 
-<title>soul07 | Mr E</title>
+<title>soul网关学习08 | Mr E</title>
 
 
 
@@ -96,10 +96,17 @@
             <div class="container">
     
     
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#zookeeper-同步策略"><span class="toc-text">zookeeper 同步策略</span></a></li></ol>
+            </div>
+        </div>
+    
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">soul07</h1>
+            <h1 class="post-title">soul网关学习08</h1>
             
                 <div class="post-meta">
                     
@@ -112,12 +119,35 @@
                         </span>
                     
                     
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/soul网关学习系列/">soul网关学习系列</a>
+                            
+                        </span>
+                    
                 </div>
             
         </header>
 
         <section class="post-content">
-            
+            <h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><p>zookeeper 同步数据体验下</p>
+<h1 id="zookeeper-同步策略"><a href="#zookeeper-同步策略" class="headerlink" title="zookeeper 同步策略"></a>zookeeper 同步策略</h1><p>昨天在使用 zookeeper 的同步策略时，在网关打开了 zookeeper 的依赖，而且配置了 zookeeper 的依赖，发现利用 divide 插件测试 http 分发时，请求时显示如下的错误信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;code&quot;:-106,&quot;message&quot;:&quot;Can not find url, please check your configuration!&quot;,&quot;data&quot;:null&#125;</span><br></pre></td></tr></table></figure>
+
+<p>检查 admin 的配置发现，在 soul 的同步策略处没有改好配置，配置改为如下。改完后，重新启动 admin，利用 ZooInspector 查看 zookeeper 的注册情况，此时发现 divide 插件的 selector ，rule 已经注册进去了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">soul:</span><br><span class="line">  sync:</span><br><span class="line">#    websocket:</span><br><span class="line">#      enabled: true</span><br><span class="line">    zookeeper:</span><br><span class="line">        url: localhost:2181</span><br><span class="line">        sessionTimeout: 5000</span><br><span class="line">        connectionTimeout: 2000</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/23/TOoWu2stN4ABid5.png" alt="image.png"></p>
+<p>再次发起 http 请求，请求成功：</p>
+<p><img src="https://i.loli.net/2021/01/23/FKqkpLeHx2RbyzX.png" alt="image.png"></p>
+<p>此时，将 admin 服务停止，发现网关和 http example 的日志均没有监听到任务输出， zookeeper 也没有任何的改变。此时发起 http 请求，请求仍然可以成功。因此，<strong>admin 在这里的作用，是将数据同步到 zookeeper，而不像 websocket 一样，同时还要保证网关与业务服务建立连接</strong>。</p>
+<p>在 admin 中，改变请求的规则，在 <code>/http/test/*</code> 添加规则 <code>/http/test/path/*</code> ，可以发现 zookeeper 监听到了改变，对规则做出了修改。此时请求<code>/http/test/path/666</code>，请求成功。</p>
+<p><img src="https://i.loli.net/2021/01/23/QUN6OIoJYHCSrDk.png" alt></p>
+<p><img src="https://i.loli.net/2021/01/23/7jrUhYIBx6epvsE.png" alt="image.png"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;userId&quot;:&quot;555&quot;,&quot;userName&quot;:&quot;hello world&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+
         </section>
 
         
@@ -154,6 +184,14 @@
                 <span>Tag(s):</span>
                 <span class="tag">
                     
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        <a href="/tags/soul/"># soul</a>
+                    
+                        <a href="/tags/网关/"># 网关</a>
+                    
+                        
                 </span>
             </div>
             <div>
