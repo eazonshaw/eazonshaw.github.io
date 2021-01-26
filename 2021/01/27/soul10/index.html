@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>soul网关学习11 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#divide-插件"><span class="toc-text">divide 插件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡"><span class="toc-text">负载均衡</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#http-探活"><span class="toc-text">http 探活</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Link"><span class="toc-text">Link</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">soul网关学习11</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 27, 2021&nbsp;&nbsp;00:27:45</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/soul网关学习系列/">soul网关学习系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><p>跑通divide插件，研究底层原理，负载均衡，ip端口探活</p>
+<h1 id="divide-插件"><a href="#divide-插件" class="headerlink" title="divide 插件"></a>divide 插件</h1><h2 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h2><p>在 idea 下启动多个 http 的服务，端口分别为 8188 和 8189。启动成功后，发现 divide 插件的选择器已经自动配置了两个 http 服务，端口分别为 8188 和 8189。</p>
+<blockquote>
+<p>注意：要先 idea 中的 <code>Edit Configurations</code> 勾选去掉 <code>Single instance only</code>，允许启动同个工程。</p>
+</blockquote>
+<p><img src="https://i.loli.net/2021/01/27/mcsZPO9gU7aJKyH.png" alt="image.png"></p>
+<p>体验负载均衡功能，分别将 8188、8189 的权重设置为 2。请求 http 服务，请求成功后，发现三种场景下，1.8188权重为2；2.8189的权重为2；3.两个端口的权重都为50，请求结果均符合预期。</p>
+<p><img src="https://i.loli.net/2021/01/27/gj3dpiHnVGQla1v.png" alt="image.png"></p>
+<h2 id="http-探活"><a href="#http-探活" class="headerlink" title="http 探活"></a>http 探活</h2><p>在soul-admin 会有一个定时任务来扫描 配置的ip端口，如果发现下线，则会除该 ip + port。</p>
+<p>体验 http 探活功能，此时将 8189 的服务停止。发现隔一会（100s），soul-admin会检测到 8189 端口已经不存在，打印错误日志。检查 divide 插件的负载均衡策略发现，8189 的服务配置已经被删除。符合预期。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2021-01-27 00:16:35.340 ERROR 40636 --- [upstream-task-5] o.d.s.a.s.impl.UpstreamCheckService      : check the url=192.168.3.3:8189 is fail</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/27/zlHmIMFhLgeWkVc.png" alt="image.png"></p>
+<p>按照官网的介绍，可以更改以下配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">soul.upstream.check:true  默认为 true，设置为false，不检测</span><br><span class="line">soul.upstream.scheduledTime:10  定时检测时间间隔，默认10秒</span><br></pre></td></tr></table></figure>
+
+<p>体验关闭 http 探活功能，更改配置 <code>soul.upstream.check</code> 为false。发现 http 的探活失败，不能检测到服务下线状态。符合预期。</p>
+<h1 id="Link"><a href="#Link" class="headerlink" title="Link"></a>Link</h1><ul>
+<li>官网介绍 divide 插件：<a href="https://dromara.org/zh-cn/docs/soul/plugin-divide.html" target="_blank" rel="noopener">https://dromara.org/zh-cn/docs/soul/plugin-divide.html</a></li>
+</ul>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2021/01/27/soul10/">http://eazon.xyz/2021/01/27/soul10/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        <a href="/tags/soul/"># soul</a>
+                    
+                        <a href="/tags/网关/"># 网关</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2021/01/26/soul09/">soul网关学习10</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
