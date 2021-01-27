@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>soul网关学习12 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#divide-插件底层原理"><span class="toc-text">divide 插件底层原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#核心工程"><span class="toc-text">核心工程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基础实现原理"><span class="toc-text">基础实现原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#负载均衡-balance"><span class="toc-text">负载均衡 balance</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#后续安排"><span class="toc-text">后续安排</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Link"><span class="toc-text">Link</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">soul网关学习12</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 28, 2021&nbsp;&nbsp;01:15:30</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/soul网关学习系列/">soul网关学习系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><p>研究 divide 底层原理，负载均衡，ip端口探活</p>
+<h1 id="divide-插件底层原理"><a href="#divide-插件底层原理" class="headerlink" title="divide 插件底层原理"></a>divide 插件底层原理</h1><h2 id="核心工程"><a href="#核心工程" class="headerlink" title="核心工程"></a>核心工程</h2><p>聚焦于两个工程 soul-spring-boot-starter-plugin-divide 和 soul-spring-boot-starter-plugin-httpclient。</p>
+<p>首先，看下 soul-spring-boot-starter-plugin-divide 的 maven 模块依赖。</p>
+<ul>
+<li>soul-plugin-divide：divide 插件的实现</li>
+<li>soul-plugin-base：插件的基础实现类（抽象）</li>
+<li>soul-plugin-api：插件的接口</li>
+<li>soul-spi</li>
+<li>soul-sync-data-api：数据同步接口</li>
+<li>soul-common：公共模块</li>
+</ul>
+<p><img src="https://i.loli.net/2021/01/28/uhiTX9GOVNg1pa6.png" alt="image.png"></p>
+<h2 id="基础实现原理"><a href="#基础实现原理" class="headerlink" title="基础实现原理"></a>基础实现原理</h2><p>然后，再看 soul-plugin-divide 的核心类 <strong>DividePlugin</strong>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">protected Mono&lt;Void&gt; doExecute(final ServerWebExchange exchange, final SoulPluginChain chain, final SelectorData selector, final RuleData rule) &#123;</span><br><span class="line">    ...</span><br><span class="line">    //从 UpstreamCacheManager 缓存管理中，根据选择器的 ID 获取 divide 插件的 upstream 列表，upstream 的实体其实就是 host、protocol、url 那些</span><br><span class="line">    final List&lt;DivideUpstream&gt; upstreamList = UpstreamCacheManager.getInstance().findUpstreamListBySelectorId(selector.getId());</span><br><span class="line">    ...</span><br><span class="line">    //校验 IP</span><br><span class="line">    final String ip = Objects.requireNonNull(exchange.getRequest().getRemoteAddress()).getAddress().getHostAddress();</span><br><span class="line">    //负载均衡工具类选择实际访问的服务</span><br><span class="line">    DivideUpstream divideUpstream = LoadBalanceUtils.selector(upstreamList, ruleHandle.getLoadBalance(), ip);</span><br><span class="line">    ...</span><br><span class="line">    // set the http url</span><br><span class="line">    //构建域</span><br><span class="line">    String domain = buildDomain(divideUpstream);</span><br><span class="line">    //构建实际 url</span><br><span class="line">    String realURL = buildRealURL(domain, soulContext, exchange);</span><br><span class="line">    ...</span><br><span class="line">    //将 httpUrl、httpTimeout、httpRetry 传递出去</span><br><span class="line">    return chain.execute(exchange);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="负载均衡-balance"><a href="#负载均衡-balance" class="headerlink" title="负载均衡 balance"></a>负载均衡 balance</h2><p>上面的实现原理提到了负载均衡工具类选择实际访问的服务，接下来可以看 LoadBalanceUtils 究竟做了些什么。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class LoadBalanceUtils &#123;</span><br><span class="line">    //三个参数：</span><br><span class="line">    //upstream 的流，就是 divide 插件的基本信息；</span><br><span class="line">    //algorithm，算术逻辑，就是 hash、random、roundRobin</span><br><span class="line">    //ip，地址</span><br><span class="line">    public static DivideUpstream selector(final List&lt;DivideUpstream&gt; upstreamList, final String algorithm, final String ip) &#123;</span><br><span class="line">        //选择合适的负载策略</span><br><span class="line">        LoadBalance loadBalance = ExtensionLoader.getExtensionLoader(LoadBalance.class).getJoin(algorithm);</span><br><span class="line">        //选择合适的服务</span><br><span class="line">        return loadBalance.select(upstreamList, ip);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体的负载策略实现类：</p>
+<ul>
+<li>HashLoadBalance</li>
+<li>RandomBalance</li>
+<li>RoundRobinBalance</li>
+</ul>
+<p>涉及到的主要是算法，明天举个栗子好好研究下。</p>
+<h1 id="后续安排"><a href="#后续安排" class="headerlink" title="后续安排"></a>后续安排</h1><ul>
+<li><input disabled type="checkbox"> HashLoadBalance</li>
+<li><input disabled type="checkbox"> http 探活逻辑</li>
+</ul>
+<h1 id="Link"><a href="#Link" class="headerlink" title="Link"></a>Link</h1><ul>
+<li>官网介绍 divide 插件：<a href="https://dromara.org/zh-cn/docs/soul/plugin-divide.html" target="_blank" rel="noopener">https://dromara.org/zh-cn/docs/soul/plugin-divide.html</a></li>
+</ul>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2021/01/28/soul11/">http://eazon.xyz/2021/01/28/soul11/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        <a href="/tags/soul/"># soul</a>
+                    
+                        <a href="/tags/网关/"># 网关</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2021/01/27/soul10/">soul网关学习11</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
