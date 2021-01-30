@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="description" content="This is the personal blog for Mr E.">
+
+
+
+<title>soul网关学习15 | Mr E</title>
+
+
+
+    <link rel="icon" href="/E.png">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+
+
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Eazon&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Eazon&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/categories">Categories</a>
+                
+                    <a class="menu-item" href="/tags">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div id="post-toc" class="post-toc">
+            <span class="post-toc-title">catalogue</span>
+            <div class="post-toc-content">
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#apache-dubbo-插件"><span class="toc-text">apache-dubbo 插件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#nacos-dubbo"><span class="toc-text">nacos + dubbo</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#待办事项"><span class="toc-text">待办事项</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Link"><span class="toc-text">Link</span></a></li></ol>
+            </div>
+        </div>
+    
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">soul网关学习15</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Eazon Shaw</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 31, 2021&nbsp;&nbsp;00:03:49</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/soul网关学习系列/">soul网关学习系列</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <section class="post-content">
+            <h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><p>跑通alibaba-dubbo， apache-dubbo插件，研究底层原理</p>
+<h1 id="apache-dubbo-插件"><a href="#apache-dubbo-插件" class="headerlink" title="apache-dubbo 插件"></a>apache-dubbo 插件</h1><h2 id="nacos-dubbo"><a href="#nacos-dubbo" class="headerlink" title="nacos + dubbo"></a>nacos + dubbo</h2><p>之前都是用 zookeeper 作为 dubbo 的注册中心，现在用 nacos 作为 dubbo 的注册中心。</p>
+<ul>
+<li><strong>admin</strong>：打开 dubbo 插件的配置，更改配置项为 nacos 注册中心。</li>
+</ul>
+<p><img src="https://i.loli.net/2021/01/30/T7GHqVXjkDdbKAs.png" alt="image.png"></p>
+<ul>
+<li><strong>服务提供方</strong>：添加 maven 依赖，在 spring-dubbo.xml 中更改 dubbo 注册中心的配置。</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Dubbo Nacos registry dependency --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-registry-nacos<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;apache.dubbo.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Keep latest Nacos client version --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.nacos<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>nacos-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;nacos-client.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">"nacos://localhost:8848"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>启动服务，可以看到 nacos 的服务列表中，注册了服务。</p>
+<p><img src="https://i.loli.net/2021/01/30/i6NbTORf3MewgWm.png" alt="image.png"></p>
+<p><img src="https://i.loli.net/2021/01/30/mFnxTGkDvMLz8P6.png" alt="image.png"></p>
+<p>同时可以观察到 nacos 配置中心中新增了关于 dubbo 的配置项。</p>
+<ul>
+<li><strong>网关</strong>：启动网关报错，大致错误如下，猜测是由于重复引入了相同的配置项。排查发现，原来是 maven 依赖重复引入了 apache dubbo 和 alibaba dubbo。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Caused by: java.lang.IllegalStateException: Duplicate key org.dromara.soul.plugin.apache.dubbo.handler.ApacheDubboPluginDataHandler@9b21bd3</span><br><span class="line">...</span><br><span class="line">    at org.dromara.soul.plugin.base.cache.CommonPluginDataSubscriber.&lt;init&gt;(CommonPluginDataSubscriber.java:47) ~[classes/:na]</span><br><span class="line">	at org.dromara.soul.web.configuration.SoulConfiguration.pluginDataSubscriber(SoulConfiguration.java:97) ~[classes/:na]</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>删除重复依赖，成功启动网关，发现调用时出现 <code>can not match rule data</code> 异常，检查的类是 CheckUtils。回溯发现，主要原因是在 AbstractSoulPlugin 中的 execute 方法中。</p>
+<p>而 AbstractSoulPlugin 的调用链的本质就是 <code>pluginData--&gt;SelectorDataRuleData--&gt;RuleData</code>，当 plugin 定位到所要调用的插件是 dubbo 时，就会去找 dubbo 相关的 selectordata 和 ruledata 数据。但是，当 selectordata 的数据存在垃圾数据（可能是由于错误加载 dubbo 插件导致）时，如下图所示，id 为 1355538588530810880 的 selectordata 为垃圾数据，会导致其优先被请求命中，然后找不到其下的 ruledata，从而导致报<code>can not match rule data</code>异常。</p>
+<p>测试中发现，此时进行选择器界面的数据同步操作时，并不会将 selectordata 中的 dubbo 数据进行修改，后续可以研究下这一块的数据同步逻辑。</p>
+<p><img src="https://i.loli.net/2021/01/30/2MgX5NFamxAU7B9.png" alt="image.png"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> List&lt;RuleData&gt; rules = BaseDataCache.getInstance().obtainRuleData(selectorData.getId());</span><br><span class="line"><span class="comment">//这里获取到的 rules 为空，就会抛出未找到 rule 的异常</span></span><br><span class="line"><span class="keyword">if</span> (CollectionUtils.isEmpty(rules)) &#123;</span><br><span class="line">    <span class="keyword">return</span> handleRuleIsNull(pluginName, exchange, chain);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时，在 nacos 中删除 id 为 1355538588530810880 的 selectordata 数据后，重启网关，发现 basedatacache 只取到了最新的的 selectordata 数据，也找到了绑定它的 ruledata 数据，请求成功调用。</p>
+<p><img src="https://i.loli.net/2021/01/31/IxCEdlK9gRTbB5H.png" alt="image.png"></p>
+<h1 id="待办事项"><a href="#待办事项" class="headerlink" title="待办事项"></a>待办事项</h1><ul>
+<li><input disabled type="checkbox"> nacos 的选择器数据同步逻辑</li>
+<li><input disabled type="checkbox"> apache dubbo 的底层原理</li>
+</ul>
+<h1 id="Link"><a href="#Link" class="headerlink" title="Link"></a>Link</h1><ul>
+<li>dubbo接入soul网关<br>：<a href="https://dromara.org/zh/projects/soul/dubbo-proxy/" target="_blank" rel="noopener">https://dromara.org/zh/projects/soul/dubbo-proxy/</a></li>
+</ul>
+
+        </section>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Eazon Shaw</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://eazon.xyz/2021/01/31/soul14/">http://eazon.xyz/2021/01/31/soul14/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Solgan:</span>
+                         <span>Do you believe in <strong>DESTINY<strong>?</strong></strong></span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/java/"># java</a>
+                    
+                        <a href="/tags/soul/"># soul</a>
+                    
+                        <a href="/tags/网关/"># 网关</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2021/01/30/soul13/">soul网关学习14</a>
+            
+        </section>
+
+
+    </article>
+</div>
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Eazon Shaw | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Sirice19/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+    </div>
+</body>
+</html>
