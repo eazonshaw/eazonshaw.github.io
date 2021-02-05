@@ -9,7 +9,7 @@
 
 
 
-<title>soul网关学习18 | Mr E</title>
+<title>soul网关学习19 | Mr E</title>
 
 
 
@@ -99,14 +99,14 @@
         <div id="post-toc" class="post-toc">
             <span class="post-toc-title">catalogue</span>
             <div class="post-toc-content">
-                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#sofa-nacos"><span class="toc-text">sofa + nacos</span></a></li></ol>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#任务"><span class="toc-text">任务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#sofa-原理"><span class="toc-text">sofa 原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Link"><span class="toc-text">Link</span></a></li></ol>
             </div>
         </div>
     
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">soul网关学习18</h1>
+            <h1 class="post-title">soul网关学习19</h1>
             
                 <div class="post-meta">
                     
@@ -115,7 +115,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">February 5, 2021&nbsp;&nbsp;02:16:15</a>
+                        Date: <a href="#">February 6, 2021&nbsp;&nbsp;03:10:05</a>
                         </span>
                     
                     
@@ -132,20 +132,21 @@
 
         <section class="post-content">
             <h1 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h1><p>跑通sofa插件，研究sofa协议实现原理</p>
-<h1 id="sofa-nacos"><a href="#sofa-nacos" class="headerlink" title="sofa + nacos"></a>sofa + nacos</h1><p>启动 admin 后，更改 sofa 插件的配置和状态。</p>
-<p><img src="https://i.loli.net/2021/02/05/zqshydnYo47WZFN.png" alt="image.png"></p>
-<p>启动网关。然后更改 sofa 的注册中心信息，启动 sofa 的例子。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">com:</span><br><span class="line">  alipay:</span><br><span class="line">    sofa:</span><br><span class="line">      rpc:</span><br><span class="line">        registry-address: nacos://127.0.0.1:8848</span><br></pre></td></tr></table></figure>
+<h1 id="sofa-原理"><a href="#sofa-原理" class="headerlink" title="sofa 原理"></a>sofa 原理</h1><p>昨天的空指针异常，大概率是由于没有实现参数解析器导致，查看官方文档可以看到，需要实现一个参数解析的实现类继承接口。</p>
+<p>自定义实现多参数支持：</p>
+<p>在网关项目中，新增一个类 A，实现 <code>org.dromara.soul.plugin.api.sofa.SofaParamResolveService</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public interface SofaParamResolveService &#123;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Build parameter pair.</span><br><span class="line">     * this is Resolve http body to get sofa param.</span><br><span class="line">     *</span><br><span class="line">     * @param body           the body</span><br><span class="line">     * @param parameterTypes the parameter types</span><br><span class="line">     * @return the pair</span><br><span class="line">     */</span><br><span class="line">    Pair&lt;String[], Object[]&gt; buildParameter(String body, String parameterTypes);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>发起请求：<code>/sofa/findById</code>，报空指针异常：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">java.lang.NullPointerException: null</span><br><span class="line">	at org.dromara.soul.plugin.sofa.proxy.SofaProxyService.genericInvoker(SofaProxyService.java:81)</span><br></pre></td></tr></table></figure>
+<p>body为http中body传的json字符串。</p>
+<p>parameterTypes: 匹配到的方法参数类型列表，如果有多个，则使用,分割。</p>
+<p>Pair中，left为参数类型，right为参数值，这是sofa泛化调用的标准。</p>
+<p>把你的类注册成Spring的bean，覆盖默认的实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line"> public SofaParamResolveService A() &#123;</span><br><span class="line">         return new A();</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
 
-<p>追溯空指针的原因，可以看到原因大概是，<code>SofaProxyService</code>中没有成功注入<code>sofaParamResolveService</code>的bean，而注入操作是在<code>SofaPluginConfiguration</code>的配置中完成的。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class SofaProxyService &#123;</span><br><span class="line"></span><br><span class="line">    private final SofaParamResolveService sofaParamResolveService;</span><br><span class="line">    </span><br><span class="line">    public SofaProxyService(final SofaParamResolveService sofaParamResolveService) &#123;</span><br><span class="line">        this.sofaParamResolveService = sofaParamResolveService;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">@ConditionalOnClass(SofaPlugin.class)</span><br><span class="line">public class SofaPluginConfiguration &#123;</span><br><span class="line">    @Bean</span><br><span class="line">    public SoulPlugin sofaPlugin(final ObjectProvider&lt;SofaParamResolveService&gt; sofaParamResolveService) &#123;</span><br><span class="line">        return new SofaPlugin(new SofaProxyService(sofaParamResolveService.getIfAvailable()));</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>研究了好一会，没发现原因，明天继续…</p>
+<h1 id="Link"><a href="#Link" class="headerlink" title="Link"></a>Link</h1><ul>
+<li><a href="https://dromara.org/zh/projects/soul/sofa-rpc-proxy/" target="_blank" rel="noopener">https://dromara.org/zh/projects/soul/sofa-rpc-proxy/</a></li>
+</ul>
 
         </section>
 
@@ -160,7 +161,7 @@
                 
                     <p class="copyright-item">
                         <span>Permalink:</span>
-                        <span><a href="http://eazon.xyz/2021/02/05/soul17/">http://eazon.xyz/2021/02/05/soul17/</a></span>
+                        <span><a href="http://eazon.xyz/2021/02/06/soul18/">http://eazon.xyz/2021/02/06/soul18/</a></span>
                     </p>
                 
                 
@@ -201,10 +202,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2021/02/06/soul18/">soul网关学习19</a>
             
-            
-            <a class="next" rel="next" href="/2021/02/04/soul16/">soul网关学习17</a>
+            <a class="next" rel="next" href="/2021/02/05/soul17/">soul网关学习18</a>
             
         </section>
 
